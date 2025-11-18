@@ -175,11 +175,108 @@ git commit -s -m "chore: bump version to $NEW_VERSION" || {
     warn "No changes to commit (version may already be set)"
 }
 
-# Create annotated tag
-info "Creating tag $FULL_VERSION..."
-git tag -a "$FULL_VERSION" -m "Release $FULL_VERSION
+# Generate changelog entry
+CHANGELOG_ENTRY=""
+if [ -n "$LAST_TAG" ] && [ -n "$COMMITS" ]; then
+    info "Generating changelog entry..."
 
-Open-source release of devgraph-integrations"
+    CHANGELOG_ENTRY="## [$NEW_VERSION] - $(date +%Y-%m-%d)
+
+"
+
+    # Add breaking changes section if any
+    if [ "$BREAKING_COUNT" -gt 0 ]; then
+        CHANGELOG_ENTRY+="### ⚠ BREAKING CHANGES
+
+"
+        BREAKING_COMMITS=$(echo "$COMMITS" | grep -E '^(feat|fix|perf|refactor)!:|BREAKING CHANGE:' || echo "")
+        while IFS= read -r commit; do
+            CHANGELOG_ENTRY+="- $commit
+"
+        done <<< "$BREAKING_COMMITS"
+        CHANGELOG_ENTRY+="
+"
+    fi
+
+    # Add features section if any
+    if [ "$FEAT_COUNT" -gt 0 ]; then
+        CHANGELOG_ENTRY+="### ✨ Features
+
+"
+        FEAT_COMMITS=$(echo "$COMMITS" | grep -E '^feat(\(.*\))?:' || echo "")
+        while IFS= read -r commit; do
+            CHANGELOG_ENTRY+="- $commit
+"
+        done <<< "$FEAT_COMMITS"
+        CHANGELOG_ENTRY+="
+"
+    fi
+
+    # Add fixes section if any
+    if [ "$FIX_COUNT" -gt 0 ]; then
+        CHANGELOG_ENTRY+="### 🐛 Bug Fixes
+
+"
+        FIX_COMMITS=$(echo "$COMMITS" | grep -E '^fix(\(.*\))?:' || echo "")
+        while IFS= read -r commit; do
+            CHANGELOG_ENTRY+="- $commit
+"
+        done <<< "$FIX_COMMITS"
+        CHANGELOG_ENTRY+="
+"
+    fi
+
+    # Add other commits
+    OTHER_COMMITS=$(echo "$COMMITS" | grep -vE '^(feat|fix)(\(.*\))?:|^(feat|fix|perf|refactor)!:|BREAKING CHANGE:' || echo "")
+    if [ -n "$OTHER_COMMITS" ]; then
+        CHANGELOG_ENTRY+="### 🔧 Other Changes
+
+"
+        while IFS= read -r commit; do
+            [ -n "$commit" ] && CHANGELOG_ENTRY+="- $commit
+"
+        done <<< "$OTHER_COMMITS"
+    fi
+fi
+
+# Update or create CHANGELOG.md
+if [ -f "CHANGELOG.md" ]; then
+    info "Updating CHANGELOG.md..."
+    # Insert new entry after the title
+    if [ -n "$CHANGELOG_ENTRY" ]; then
+        # Create temporary file with new entry
+        {
+            head -n 2 CHANGELOG.md  # Keep title and blank line
+            echo "$CHANGELOG_ENTRY"
+            tail -n +3 CHANGELOG.md  # Append rest of file
+        } > CHANGELOG.md.tmp
+        mv CHANGELOG.md.tmp CHANGELOG.md
+        git add CHANGELOG.md
+    fi
+else
+    info "Creating CHANGELOG.md..."
+    if [ -n "$CHANGELOG_ENTRY" ]; then
+        cat > CHANGELOG.md << EOF
+# Changelog
+
+$CHANGELOG_ENTRY
+EOF
+        git add CHANGELOG.md
+    fi
+fi
+
+# Create annotated tag with changelog
+info "Creating tag $FULL_VERSION..."
+TAG_MESSAGE="Release $FULL_VERSION
+
+"
+if [ -n "$CHANGELOG_ENTRY" ]; then
+    TAG_MESSAGE+="$CHANGELOG_ENTRY"
+else
+    TAG_MESSAGE+="Open-source release of devgraph-integrations"
+fi
+
+git tag -a "$FULL_VERSION" -m "$TAG_MESSAGE"
 
 # Push changes
 info "Pushing changes and tag to remote..."

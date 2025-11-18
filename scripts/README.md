@@ -28,9 +28,10 @@ The script will:
    - `fix:` → PATCH bump (0.1.0 → 0.1.1)
 5. **Prompt for new version** with suggested default (can override)
 6. **Update `pyproject.toml`** with the new version
-7. **Create a commit** with the version bump
-8. **Create an annotated tag** with release notes
-9. **Push to GitHub** which triggers the release workflow
+7. **Generate CHANGELOG.md** from conventional commits
+8. **Create a commit** with the version bump
+9. **Create an annotated tag** with release notes and changelog
+10. **Push to GitHub** which triggers the release workflow
 
 ### What Happens Next
 
@@ -238,3 +239,124 @@ New version [0.2.0]: 1.0.0  ← You can override to MAJOR if you prefer
 2. **Review the commit summary** before accepting the suggestion
 3. **Override if needed** - the script is a helper, not a requirement
 4. **Document breaking changes** clearly in commit messages
+
+## Automatic Changelog Generation
+
+The release script automatically generates and maintains a `CHANGELOG.md` file based on conventional commits.
+
+### Changelog Structure
+
+Each release creates a new entry with the following sections (when applicable):
+
+- **⚠ BREAKING CHANGES** - For commits with `feat!:`, `fix!:`, or `BREAKING CHANGE:` in the body
+- **✨ Features** - For commits starting with `feat:` or `feat(scope):`
+- **🐛 Bug Fixes** - For commits starting with `fix:` or `fix(scope):`
+- **🔧 Other Changes** - For all other commits (chore, docs, test, etc.)
+
+### Example Changelog Entry
+
+```markdown
+## [0.2.0] - 2025-11-18
+
+### ✨ Features
+
+- feat(github): add webhook support for real-time updates
+- feat(gitlab): add project discovery
+- feat(docker): support multi-platform image builds
+
+### 🐛 Bug Fixes
+
+- fix(core): handle rate limiting gracefully
+- fix(config): validate required selector fields
+
+### 🔧 Other Changes
+
+- chore: update dependencies to latest versions
+- docs: improve README with examples
+```
+
+### Changelog Workflow
+
+1. **First Release**: If no `CHANGELOG.md` exists, the script creates one with:
+   ```markdown
+   # Changelog
+
+   ## [0.1.0] - 2025-11-18
+   ...
+   ```
+
+2. **Subsequent Releases**: New entries are inserted after the title, keeping the most recent release at the top:
+   ```markdown
+   # Changelog
+
+   ## [0.2.0] - 2025-11-18
+   <new changes>
+
+   ## [0.1.0] - 2025-11-17
+   <old changes>
+   ```
+
+3. **Git Tag Annotation**: The changelog entry is included in the annotated git tag message, making it visible in GitHub releases
+
+### Changelog Best Practices
+
+1. **Write descriptive commit messages** - These become your changelog entries
+2. **Use scopes** for clarity - `feat(github):` is more informative than `feat:`
+3. **Group related changes** - Multiple commits on the same feature will all appear
+4. **Document breaking changes** thoroughly - These get special prominence
+
+### Example: Full Changelog Workflow
+
+```bash
+# Make changes and commit using conventional commits
+git commit -m "feat(gitlab): add project discovery"
+git commit -m "feat(docker): support private registries"
+git commit -m "fix(github): handle rate limit errors"
+git commit -m "docs: update installation guide"
+
+# Run release script
+./scripts/release.sh
+
+# The script will:
+# 1. Analyze these 4 commits
+# 2. Suggest MINOR bump (new features detected)
+# 3. Generate changelog entry:
+#    ### ✨ Features
+#    - feat(gitlab): add project discovery
+#    - feat(docker): support private registries
+#
+#    ### 🐛 Bug Fixes
+#    - fix(github): handle rate limit errors
+#
+#    ### 🔧 Other Changes
+#    - docs: update installation guide
+# 4. Update/create CHANGELOG.md
+# 5. Commit the changes
+# 6. Create annotated tag with changelog
+```
+
+### Manual Changelog Editing
+
+While the script generates the changelog automatically, you can:
+
+1. **Edit before committing** - After the script updates `CHANGELOG.md`, you can manually edit it before the commit is created
+2. **Add additional context** - Expand on generated entries with more details
+3. **Reorganize entries** - Group or reorder items for better readability
+
+The changelog is just markdown, so feel free to enhance it as needed.
+
+### Viewing Changelogs
+
+**In the repository:**
+```bash
+cat CHANGELOG.md
+```
+
+**In git tags:**
+```bash
+git tag -l -n20 v0.2.0
+```
+
+**On GitHub:**
+- Releases page shows the annotated tag message (includes changelog)
+- `CHANGELOG.md` file is visible in the repository root
