@@ -1,0 +1,1 @@
+"""FOSSA entity type definitions."""

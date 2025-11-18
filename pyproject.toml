@@ -1,0 +1,83 @@
+[tool.poetry]
+name = "devgraph-integrations"
+version = "0.1.0"
+description = "Integration providers for discovering and syncing entities with Devgraph"
+authors = ["Craig Tracey <craig@arctir.com>"]
+readme = "README.md"
+packages = [{ include = "devgraph_integrations" }]
+license = "Apache-2.0"
+homepage = "https://github.com/arctir/devgraph-integrations"
+repository = "https://github.com/arctir/devgraph-integrations"
+keywords = ["devgraph", "discovery", "entity", "graph", "synchronization"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pydantic = "^2.10.6"
+schedule = "^1.2.2"
+pluggy = "^1.5.0"
+pyyaml = "^6.0.2"
+stevedore = "^5.4.1"
+loguru = "^0.7.3"
+requests = "^2.32.4"
+httpx = "^0.28.1"
+attrs = "^25.3.0"
+python-dateutil = "^2.9.0.post0"
+
+# Provider-specific dependencies
+pygithub = "^2.5.0"
+python-gitlab = "^6.4.0"
+kubernetes = "^33.1.0"
+ldap3 = "^2.9.1"
+jira = "^3.8.0"
+
+# MCP server support (optional)
+fastmcp = { version = "^2.10.1", optional = true }
+mcp = { version = "^1.10.1", optional = true }
+devgraph-client = "1.0.0b17"
+inflect = "^7.5.0"
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+pytest = "^8.0.0"
+pytest-asyncio = "^1.1.0"
+mypy = "^1.18.1"
+isort = "^6.0.1"
+flake8 = "^7.2.0"
+pytest-cov = "^7.0.0"
+ruff = "^0.14.4"
+
+[tool.poetry.extras]
+mcp = ["fastmcp", "mcp"]
+all = ["fastmcp", "mcp"]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+devgraph-integrations = "devgraph_integrations.cli:main"
+
+[tool.poetry.plugins."devgraph.discovery.molecules"]
+"github.molecules.devgraph.ai" = "devgraph_integrations.molecules.github.provider:GithubProvider"
+"gitlab.molecules.devgraph.ai" = "devgraph_integrations.molecules.gitlab.provider:GitlabProvider"
+"argo.molecules.devgraph.ai" = "devgraph_integrations.molecules.argo.provider:ArgoProvider"
+"vercel.molecules.devgraph.ai" = "devgraph_integrations.molecules.vercel.provider:VercelProvider"
+"docker.molecules.devgraph.ai" = "devgraph_integrations.molecules.docker.provider:DockerProvider"
+"file.molecules.devgraph.ai" = "devgraph_integrations.molecules.file.provider:FileProvider"
+"fossa.molecules.devgraph.ai" = "devgraph_integrations.molecules.fossa.provider:FOSSAProvider"
+"ldap.molecules.devgraph.ai" = "devgraph_integrations.molecules.ldap.provider:LdapProvider"
+"grafana.molecules.devgraph.ai" = "devgraph_integrations.molecules.grafana.provider:GrafanaProvider"
+"meta.molecules.devgraph.ai" = "devgraph_integrations.molecules.meta.provider:MetaProvider"
+
+[tool.poetry.plugins."devgraph.mcpserver.plugins"]
+"github.mcp.devgraph.ai" = "devgraph_integrations.molecules.github.mcp:GithubMCPServer"
+"gitlab.mcp.devgraph.ai" = "devgraph_integrations.molecules.gitlab.mcp:GitlabMCPServer"
+"fossa.mcp.devgraph.ai" = "devgraph_integrations.molecules.fossa.mcp:FOSSAMCPServer"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+include_trailing_comma = true
+use_parentheses = true
+line_length = 88
+src_paths = ["devgraph_integrations"]

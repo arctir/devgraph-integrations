@@ -1,0 +1,1 @@
+"""Grafana entity types."""

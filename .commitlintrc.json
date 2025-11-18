@@ -1,0 +1,54 @@
+{
+  "extends": ["@commitlint/config-conventional"],
+  "rules": {
+    "type-enum": [
+      2,
+      "always",
+      [
+        "feat",
+        "fix",
+        "docs",
+        "style",
+        "refactor",
+        "perf",
+        "test",
+        "build",
+        "ci",
+        "chore",
+        "revert"
+      ]
+    ],
+    "scope-enum": [
+      2,
+      "always",
+      [
+        "fossa",
+        "github",
+        "gitlab",
+        "docker",
+        "argo",
+        "file",
+        "ldap",
+        "jira",
+        "vercel",
+        "grafana",
+        "meta",
+        "cron",
+        "dependencies",
+        "devgraph",
+        "mcp",
+        "core",
+        "config",
+        "cli",
+        "types",
+        "tests",
+        "deps"
+      ]
+    ],
+    "scope-case": [2, "always", "lower-case"],
+    "subject-case": [0],
+    "subject-empty": [2, "never"],
+    "subject-full-stop": [2, "never", "."],
+    "header-max-length": [2, "always", 100]
+  }
+}
