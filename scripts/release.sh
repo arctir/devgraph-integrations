@@ -50,11 +50,86 @@ if [ -n "$LAST_TAG" ]; then
     fi
 fi
 
+# Analyze commits since last tag for version suggestion
+if [ -n "$LAST_TAG" ]; then
+    echo ""
+    info "Analyzing commits since v$LAST_TAG for version suggestion..."
+
+    # Get commits since last tag
+    COMMITS=$(git log "v${LAST_TAG}..HEAD" --pretty=format:"%s" 2>/dev/null || echo "")
+
+    if [ -n "$COMMITS" ]; then
+        # Count different commit types
+        BREAKING_COUNT=$(echo "$COMMITS" | grep -cE '^(feat|fix|perf|refactor)!:|BREAKING CHANGE:' || echo 0)
+        FEAT_COUNT=$(echo "$COMMITS" | grep -cE '^feat(\(.*\))?:' || echo 0)
+        FIX_COUNT=$(echo "$COMMITS" | grep -cE '^fix(\(.*\))?:' || echo 0)
+
+        # Determine suggested bump
+        IFS='.' read -r MAJOR MINOR PATCH <<< "$LAST_TAG"
+
+        if [ "$BREAKING_COUNT" -gt 0 ]; then
+            SUGGESTED_MAJOR=$((MAJOR + 1))
+            SUGGESTED_MINOR=0
+            SUGGESTED_PATCH=0
+            BUMP_TYPE="MAJOR (breaking changes detected)"
+        elif [ "$FEAT_COUNT" -gt 0 ]; then
+            SUGGESTED_MAJOR=$MAJOR
+            SUGGESTED_MINOR=$((MINOR + 1))
+            SUGGESTED_PATCH=0
+            BUMP_TYPE="MINOR (new features detected)"
+        elif [ "$FIX_COUNT" -gt 0 ]; then
+            SUGGESTED_MAJOR=$MAJOR
+            SUGGESTED_MINOR=$MINOR
+            SUGGESTED_PATCH=$((PATCH + 1))
+            BUMP_TYPE="PATCH (bug fixes detected)"
+        else
+            SUGGESTED_MAJOR=$MAJOR
+            SUGGESTED_MINOR=$MINOR
+            SUGGESTED_PATCH=$((PATCH + 1))
+            BUMP_TYPE="PATCH (other changes)"
+        fi
+
+        SUGGESTED_VERSION="${SUGGESTED_MAJOR}.${SUGGESTED_MINOR}.${SUGGESTED_PATCH}"
+
+        # Show commit summary
+        echo ""
+        echo -e "${BLUE}Commits since v${LAST_TAG}:${NC}"
+        if [ "$BREAKING_COUNT" -gt 0 ]; then
+            echo -e "  ${RED}Breaking changes: $BREAKING_COUNT${NC}"
+            echo "$COMMITS" | grep -E '^(feat|fix|perf|refactor)!:|BREAKING CHANGE:' | sed 's/^/    /' || true
+        fi
+        if [ "$FEAT_COUNT" -gt 0 ]; then
+            echo -e "  ${GREEN}Features: $FEAT_COUNT${NC}"
+            echo "$COMMITS" | grep -E '^feat(\(.*\))?:' | sed 's/^/    /' || true
+        fi
+        if [ "$FIX_COUNT" -gt 0 ]; then
+            echo -e "  ${YELLOW}Fixes: $FIX_COUNT${NC}"
+            echo "$COMMITS" | grep -E '^fix(\(.*\))?:' | sed 's/^/    /' || true
+        fi
+
+        echo ""
+        success "Suggested version: $SUGGESTED_VERSION ($BUMP_TYPE)"
+    else
+        warn "No commits found since last tag"
+        SUGGESTED_VERSION=""
+    fi
+else
+    warn "No previous tags found, cannot analyze commits"
+    SUGGESTED_VERSION=""
+fi
+
 # Prompt for new version
 echo ""
-echo "Enter new version (current: $CURRENT_VERSION):"
-echo "  Format: MAJOR.MINOR.PATCH (e.g., 0.1.0, 0.2.0, 1.0.0)"
-read -p "New version: " NEW_VERSION
+if [ -n "$SUGGESTED_VERSION" ]; then
+    echo "Enter new version (current: $CURRENT_VERSION, suggested: $SUGGESTED_VERSION):"
+    echo "  Format: MAJOR.MINOR.PATCH (e.g., 0.1.0, 0.2.0, 1.0.0)"
+    read -p "New version [$SUGGESTED_VERSION]: " NEW_VERSION
+    NEW_VERSION=${NEW_VERSION:-$SUGGESTED_VERSION}
+else
+    echo "Enter new version (current: $CURRENT_VERSION):"
+    echo "  Format: MAJOR.MINOR.PATCH (e.g., 0.1.0, 0.2.0, 1.0.0)"
+    read -p "New version: " NEW_VERSION
+fi
 
 # Validate version format
 if ! [[ "$NEW_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
