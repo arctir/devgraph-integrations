@@ -60,9 +60,14 @@ if [ -n "$LAST_TAG" ]; then
 
     if [ -n "$COMMITS" ]; then
         # Count different commit types
-        BREAKING_COUNT=$(echo "$COMMITS" | grep -cE '^(feat|fix|perf|refactor)!:|BREAKING CHANGE:' || echo 0)
-        FEAT_COUNT=$(echo "$COMMITS" | grep -cE '^feat(\(.*\))?:' || echo 0)
-        FIX_COUNT=$(echo "$COMMITS" | grep -cE '^fix(\(.*\))?:' || echo 0)
+        BREAKING_COUNT=$(echo "$COMMITS" | grep -cE '^(feat|fix|perf|refactor)!:|BREAKING CHANGE:' 2>/dev/null || echo 0)
+        FEAT_COUNT=$(echo "$COMMITS" | grep -cE '^feat(\(.*\))?:' 2>/dev/null || echo 0)
+        FIX_COUNT=$(echo "$COMMITS" | grep -cE '^fix(\(.*\))?:' 2>/dev/null || echo 0)
+
+        # Trim whitespace and ensure numeric
+        BREAKING_COUNT=$(echo "$BREAKING_COUNT" | tr -d '\n' | tr -d ' ')
+        FEAT_COUNT=$(echo "$FEAT_COUNT" | tr -d '\n' | tr -d ' ')
+        FIX_COUNT=$(echo "$FIX_COUNT" | tr -d '\n' | tr -d ' ')
 
         # Determine suggested bump
         IFS='.' read -r MAJOR MINOR PATCH <<< "$LAST_TAG"
