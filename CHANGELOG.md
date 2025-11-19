@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.3] - 2025-11-19
+
+### 🐛 Bug Fixes
+
+- fix: remove extra whitespace from changelog
+- fix(ci): address failing lint and mypy issues
+
+### 🔧 Other Changes
+
+- chore: bump version to 0.3.2
+
 ## [0.3.2] - 2025-11-19
 
 ### 🐛 Bug Fixes
