@@ -21,7 +21,13 @@ async def run_discover(args):
     path = args.config_path
     config = None
     try:
-        config = Config.from_config_file(path)
+        # Check if a config source type is specified via environment variable
+        source_type = os.getenv("DEVGRAPH_CONFIG_SOURCE")
+        if source_type:
+            logger.debug(f"Using config source type from environment: {source_type}")
+            config = Config.from_source(path, source_type=source_type)
+        else:
+            config = Config.from_config_file(path)
     except Exception as e:
         logger.error(f"Failed to load config: {e}")
         sys.exit(1)
@@ -210,7 +216,13 @@ def run_mcp(args):
         sys.exit(1)
 
     try:
-        config = Config.from_config_file(args.config_path)
+        # Check if a config source type is specified via environment variable
+        source_type = os.getenv("DEVGRAPH_CONFIG_SOURCE")
+        if source_type:
+            logger.debug(f"Using config source type from environment: {source_type}")
+            config = Config.from_source(args.config_path, source_type=source_type)
+        else:
+            config = Config.from_config_file(args.config_path)
     except Exception as e:
         logger.error(f"Failed to load config: {e}")
         sys.exit(1)
@@ -247,7 +259,7 @@ def parse_arguments():
     discover_parser.add_argument(
         "-c",
         "--config-path",
-        default="/etc/devgraph/config.yaml",
+        default=os.getenv("DEVGRAPH_CONFIG_PATH", "/etc/devgraph/config.yaml"),
         type=str,
         help="Path to the config file",
     )
@@ -271,7 +283,7 @@ def parse_arguments():
     mcp_parser.add_argument(
         "-c",
         "--config-path",
-        default="/etc/devgraph/config.yaml",
+        default=os.getenv("DEVGRAPH_CONFIG_PATH", "/etc/devgraph/config.yaml"),
         type=str,
         help="Path to the config file",
     )
