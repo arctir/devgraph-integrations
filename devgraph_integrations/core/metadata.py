@@ -77,6 +77,9 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
     """
     List all available molecules and their metadata.
 
+    Uses stevedore to discover molecules from all installed packages
+    that register entry points under 'devgraph.molecules'.
+
     Returns:
         Dictionary mapping molecule name to metadata
 
@@ -87,19 +90,38 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
         FOSSA: discovery, mcp, relations
         GitHub: discovery, mcp
     """
-    import pkgutil
-
-    import devgraph_integrations.molecules as molecules_pkg
+    from stevedore import ExtensionManager
 
     result = {}
 
-    # Discover all molecule subpackages from OSS package
-    for importer, modname, ispkg in pkgutil.iter_modules(molecules_pkg.__path__):
-        if ispkg and not modname.startswith("_"):
-            module_path = f"devgraph_integrations.molecules.{modname}"
-            metadata = get_molecule_metadata(module_path)
-            if metadata:
+    def on_load_failure(_manager, _entrypoint, _exception):
+        pass  # Silently skip failed loads
+
+    # Use stevedore to discover all molecules from entry points
+    mgr = ExtensionManager(
+        namespace="devgraph.molecules",
+        invoke_on_load=False,
+        on_load_failure_callback=on_load_failure,
+    )
+
+    for ext in mgr:
+        plugin_class = ext.plugin
+
+        # Try to get metadata from the extension class's get_metadata method
+        if hasattr(plugin_class, "get_metadata"):
+            try:
+                meta_dict = plugin_class.get_metadata()
+                metadata = MoleculeMetadata(**meta_dict)
                 result[metadata.name] = metadata
+                continue
+            except Exception:
+                pass
+
+        # Fallback: try to get from module's __molecule_metadata__
+        module_path = plugin_class.__module__.rsplit(".", 1)[0]
+        metadata = get_molecule_metadata(module_path)
+        if metadata:
+            result[metadata.name] = metadata
 
     return result
 

@@ -72,6 +72,18 @@ class FileConfigSource(ConfigSource):
     This is the default configuration source for OSS deployments.
     """
 
+    @staticmethod
+    def get_cli_args() -> list[dict]:
+        """Return CLI arguments for file config source."""
+        return [
+            {
+                "flags": ["-c", "--config"],
+                "help": "Path to YAML configuration file",
+                "default": "/etc/devgraph/config.yaml",
+                "dest": "config_path",
+            },
+        ]
+
     def supports(self, source_id: str) -> bool:
         """Check if source_id is a file path.
 
@@ -113,7 +125,7 @@ class FileConfigSource(ConfigSource):
         except yaml.YAMLError as e:
             raise ConfigSourceError(f"Invalid YAML in {source_id}: {e}")
 
-        # Apply environment variable overrides if requested
+        # Apply environment variable overrides (hidden option, not exposed in CLI)
         env_prefix = kwargs.get("env_prefix", "DEVGRAPH_CFG_")
         if env_prefix:
             data = override_with_env(data, env_prefix)

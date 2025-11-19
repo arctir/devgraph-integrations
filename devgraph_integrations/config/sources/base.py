@@ -26,6 +26,35 @@ class ConfigSource(ABC):
     from various backends (files, APIs, databases, etc.).
     """
 
+    @staticmethod
+    def get_supported_commands() -> list[str]:
+        """Return list of CLI commands this config source supports.
+
+        Returns:
+            List of command names (e.g., ["discover", "mcp"])
+            Empty list means all commands are supported.
+        """
+        return []  # Empty means all commands
+
+    @staticmethod
+    def get_cli_args() -> list[dict[str, Any]]:
+        """Return CLI arguments for this config source.
+
+        Each dict should contain argparse.add_argument parameters:
+        - 'name' or 'flags': argument name(s)
+        - All other argparse.add_argument kwargs
+
+        Returns:
+            List of argument definitions
+
+        Example:
+            return [
+                {"flags": ["-f", "--file"], "help": "Config file path", "required": True},
+                {"flags": ["--env-prefix"], "help": "Env var prefix", "default": ""},
+            ]
+        """
+        return []
+
     @abstractmethod
     def load(self, source_id: str, **kwargs) -> dict[str, Any]:
         """Load configuration from this source.

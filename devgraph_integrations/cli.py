@@ -7,7 +7,6 @@ or set: export PYTHONWARNINGS="ignore::DeprecationWarning"
 
 import argparse
 import asyncio
-import os
 import sys
 
 from loguru import logger
@@ -19,14 +18,28 @@ from devgraph_integrations.core.metadata import list_all_molecules
 
 async def run_discover(args):
     """Run discovery process."""
-    path = args.config_path
     config = None
     try:
-        # Check if a config source type is specified via environment variable
-        source_type = os.getenv("DEVGRAPH_CONFIG_SOURCE")
-        config = Config.from_source(
-            path, source_type=source_type, env_prefix="DEVGRAPH_CFG_"
-        )
+        from devgraph_integrations.config.sources import get_config_source_manager
+
+        manager = get_config_source_manager()
+        # Default to file if no config_source subcommand specified
+        source_type = getattr(args, "config_source", None) or "file"
+        source = manager.get_source(source_type=source_type)
+
+        # Build kwargs from args that match the source's CLI args
+        kwargs = {}
+        if hasattr(source, "get_cli_args"):
+            for arg_def in source.get_cli_args():
+                dest = arg_def.get("dest") or arg_def.get("flags", [""])[-1].lstrip(
+                    "-"
+                ).replace("-", "_")
+                if hasattr(args, dest):
+                    kwargs[dest] = getattr(args, dest)
+
+        # Load config using the source
+        config_data = source.load(getattr(args, "config_path", ""), **kwargs)
+        config = Config(**config_data)
     except Exception as e:
         logger.error(f"Failed to load config: {e}")
         sys.exit(1)
@@ -216,11 +229,26 @@ def run_mcp(args):
         sys.exit(1)
 
     try:
-        # Check if a config source type is specified via environment variable
-        source_type = os.getenv("DEVGRAPH_CONFIG_SOURCE")
-        config = Config.from_source(
-            args.config_path, source_type=source_type, env_prefix="DEVGRAPH_CFG_"
-        )
+        from devgraph_integrations.config.sources import get_config_source_manager
+
+        manager = get_config_source_manager()
+        # Default to file if no config_source subcommand specified
+        source_type = getattr(args, "config_source", None) or "file"
+        source = manager.get_source(source_type=source_type)
+
+        # Build kwargs from args that match the source's CLI args
+        kwargs = {}
+        if hasattr(source, "get_cli_args"):
+            for arg_def in source.get_cli_args():
+                dest = arg_def.get("dest") or arg_def.get("flags", [""])[-1].lstrip(
+                    "-"
+                ).replace("-", "_")
+                if hasattr(args, dest):
+                    kwargs[dest] = getattr(args, dest)
+
+        # Load config using the source
+        config_data = source.load(getattr(args, "config_path", ""), **kwargs)
+        config = Config(**config_data)
     except Exception as e:
         logger.error(f"Failed to load config: {e}")
         sys.exit(1)
@@ -232,6 +260,55 @@ def run_mcp(args):
     server = DevgraphMCPSever(config.mcp)
     logger.info(f"Starting MCP server on port {config.mcp.port}")
     server.run(reload=args.reload)
+
+
+def _add_config_source_subparsers(parser, manager, command_name: str):
+    """Add config source subcommands to a parser, filtered by command support."""
+    # Get sources that support this command
+    supported_sources = []
+    for source_name in manager.list_sources():
+        source = manager._sources[source_name]
+        supported_commands = []
+        if hasattr(source, "get_supported_commands"):
+            supported_commands = source.get_supported_commands()
+        # Empty list means all commands supported
+        if not supported_commands or command_name in supported_commands:
+            supported_sources.append(source_name)
+
+    if not supported_sources:
+        return
+
+    # Create subparsers for config sources
+    source_subparsers = parser.add_subparsers(
+        dest="config_source",
+        help="Configuration source (default: file)",
+    )
+
+    # Add subparser for each supported source
+    for source_name in supported_sources:
+        source = manager._sources[source_name]
+        source_parser = source_subparsers.add_parser(
+            source_name,
+            help=f"Use {source_name} configuration source",
+        )
+
+        # Add CLI args for this source
+        if hasattr(source, "get_cli_args"):
+            for arg_def in source.get_cli_args():
+                flags = arg_def.pop("flags", None)
+                if flags:
+                    source_parser.add_argument(*flags, **arg_def)
+                    arg_def["flags"] = flags
+
+    # Also add file source args directly to parent for default behavior
+    if "file" in supported_sources:
+        file_source = manager._sources["file"]
+        if hasattr(file_source, "get_cli_args"):
+            for arg_def in file_source.get_cli_args():
+                flags = arg_def.pop("flags", None)
+                if flags:
+                    parser.add_argument(*flags, **arg_def)
+                    arg_def["flags"] = flags
 
 
 def parse_arguments():
@@ -250,17 +327,16 @@ def parse_arguments():
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
+    # Load config source manager
+    from devgraph_integrations.config.sources import get_config_source_manager
+
+    manager = get_config_source_manager()
+
     # Discovery subcommand
     discover_parser = subparsers.add_parser(
         "discover", help="Run entity discovery process"
     )
-    discover_parser.add_argument(
-        "-c",
-        "--config-path",
-        default=os.getenv("DEVGRAPH_CONFIG_PATH", "/etc/devgraph/config.yaml"),
-        type=str,
-        help="Path to the config file",
-    )
+
     discover_parser.add_argument(
         "-o",
         "--oneshot",
@@ -276,21 +352,21 @@ def parse_arguments():
         help="Specific molecules to run (runs all if not specified)",
     )
 
+    # Add config source subparsers (must be after other args for default file behavior)
+    _add_config_source_subparsers(discover_parser, manager, "discover")
+
     # MCP server subcommand
     mcp_parser = subparsers.add_parser("mcp", help="Run MCP server")
-    mcp_parser.add_argument(
-        "-c",
-        "--config-path",
-        default=os.getenv("DEVGRAPH_CONFIG_PATH", "/etc/devgraph/config.yaml"),
-        type=str,
-        help="Path to the config file",
-    )
+
     mcp_parser.add_argument(
         "-r",
         "--reload",
         action="store_true",
         help="Enable auto-reload for development",
     )
+
+    # Add config source subparsers
+    _add_config_source_subparsers(mcp_parser, manager, "mcp")
 
     # List molecules subcommand
     list_parser = subparsers.add_parser("list", help="List available molecules")

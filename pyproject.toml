@@ -57,22 +57,18 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 devgraph-integrations = "devgraph_integrations.cli:main"
 
-[tool.poetry.plugins."devgraph.discovery.molecules"]
-"github.molecules.devgraph.ai" = "devgraph_integrations.molecules.github.provider:GithubProvider"
-"gitlab.molecules.devgraph.ai" = "devgraph_integrations.molecules.gitlab.provider:GitlabProvider"
-"argo.molecules.devgraph.ai" = "devgraph_integrations.molecules.argo.provider:ArgoProvider"
-"vercel.molecules.devgraph.ai" = "devgraph_integrations.molecules.vercel.provider:VercelProvider"
-"docker.molecules.devgraph.ai" = "devgraph_integrations.molecules.docker.provider:DockerProvider"
-"file.molecules.devgraph.ai" = "devgraph_integrations.molecules.file.provider:FileProvider"
-"fossa.molecules.devgraph.ai" = "devgraph_integrations.molecules.fossa.provider:FOSSAProvider"
-"ldap.molecules.devgraph.ai" = "devgraph_integrations.molecules.ldap.provider:LdapProvider"
-"grafana.molecules.devgraph.ai" = "devgraph_integrations.molecules.grafana.provider:GrafanaProvider"
-"meta.molecules.devgraph.ai" = "devgraph_integrations.molecules.meta.provider:MetaProvider"
-
-[tool.poetry.plugins."devgraph.mcpserver.plugins"]
-"github.mcp.devgraph.ai" = "devgraph_integrations.molecules.github.mcp:GithubMCPServer"
-"gitlab.mcp.devgraph.ai" = "devgraph_integrations.molecules.gitlab.mcp:GitlabMCPServer"
-"fossa.mcp.devgraph.ai" = "devgraph_integrations.molecules.fossa.mcp:FOSSAMCPServer"
+# Single namespace for all molecules - each molecule provides its capabilities
+[tool.poetry.plugins."devgraph.molecules"]
+"github.molecules.devgraph.ai" = "devgraph_integrations.molecules.github.molecule:GithubMolecule"
+"gitlab.molecules.devgraph.ai" = "devgraph_integrations.molecules.gitlab.molecule:GitlabMolecule"
+"argo.molecules.devgraph.ai" = "devgraph_integrations.molecules.argo.molecule:ArgoMolecule"
+"vercel.molecules.devgraph.ai" = "devgraph_integrations.molecules.vercel.molecule:VercelMolecule"
+"docker.molecules.devgraph.ai" = "devgraph_integrations.molecules.docker.molecule:DockerMolecule"
+"file.molecules.devgraph.ai" = "devgraph_integrations.molecules.file.molecule:FileMolecule"
+"fossa.molecules.devgraph.ai" = "devgraph_integrations.molecules.fossa.molecule:FossaMolecule"
+"ldap.molecules.devgraph.ai" = "devgraph_integrations.molecules.ldap.molecule:LdapMolecule"
+"grafana.molecules.devgraph.ai" = "devgraph_integrations.molecules.grafana.molecule:GrafanaMolecule"
+"meta.molecules.devgraph.ai" = "devgraph_integrations.molecules.meta.molecule:MetaMolecule"
 
 [tool.poetry.plugins."devgraph_integrations.config.sources"]
 "file" = "devgraph_integrations.config.sources.file:FileConfigSource"
