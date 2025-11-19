@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.3] - 2025-11-19
+
+### 🐛 Bug Fixes
+
+- fix: use stevedore for extension loading
+
+
 ## [0.6.2] - 2025-11-19
 
 ### 🐛 Bug Fixes
