@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.6.1] - 2025-11-19
+
+### 🐛 Bug Fixes
+
+- fix: restore release-manifest capabilities
+
+### 🔧 Other Changes
+
+- docs: add guide for creating custom molecules
+
 ## [0.6.0] - 2025-11-19
 
 ### ✨ Features
