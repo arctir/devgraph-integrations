@@ -24,11 +24,9 @@ async def run_discover(args):
     try:
         # Check if a config source type is specified via environment variable
         source_type = os.getenv("DEVGRAPH_CONFIG_SOURCE")
-        if source_type:
-            logger.debug(f"Using config source type from environment: {source_type}")
-            config = Config.from_source(path, source_type=source_type)
-        else:
-            config = Config.from_config_file(path)
+        config = Config.from_source(
+            path, source_type=source_type, env_prefix="DEVGRAPH_CFG_"
+        )
     except Exception as e:
         logger.error(f"Failed to load config: {e}")
         sys.exit(1)
@@ -77,6 +75,35 @@ def run_list_molecules(args):
         print(
             f"{meta.display_name:<15} {meta.version:<10} {capabilities:<30} {entity_types}{status}"
         )
+
+    print()
+
+
+def run_list_config_sources(args):
+    """List available config sources."""
+    from devgraph_integrations.config.sources import get_config_source_manager
+
+    manager = get_config_source_manager()
+    sources = manager.list_sources()
+
+    if args.json:
+        import json
+
+        output = {"sources": sources, "count": len(sources)}
+        print(json.dumps(output, indent=2))
+        return
+
+    print(f"\nAvailable config sources ({len(sources)}):")
+    print("=" * 50)
+
+    if not sources:
+        print("  (none found)")
+    else:
+        for source_name in sorted(sources):
+            source = manager._sources[source_name]
+            source_class = source.__class__.__name__
+            source_module = source.__class__.__module__
+            print(f"  {source_name:<20} ({source_module}.{source_class})")
 
     print()
 
@@ -191,11 +218,9 @@ def run_mcp(args):
     try:
         # Check if a config source type is specified via environment variable
         source_type = os.getenv("DEVGRAPH_CONFIG_SOURCE")
-        if source_type:
-            logger.debug(f"Using config source type from environment: {source_type}")
-            config = Config.from_source(args.config_path, source_type=source_type)
-        else:
-            config = Config.from_config_file(args.config_path)
+        config = Config.from_source(
+            args.config_path, source_type=source_type, env_prefix="DEVGRAPH_CFG_"
+        )
     except Exception as e:
         logger.error(f"Failed to load config: {e}")
         sys.exit(1)
@@ -275,6 +300,16 @@ def parse_arguments():
         help="Output as JSON",
     )
 
+    # List config sources subcommand
+    config_sources_parser = subparsers.add_parser(
+        "config-sources", help="List available configuration sources"
+    )
+    config_sources_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     # Release manifest subcommand
     manifest_parser = subparsers.add_parser(
         "release-manifest", help="Generate release manifest JSON for GitHub releases"
@@ -307,6 +342,8 @@ def main():
             run_mcp(args)
         elif args.command == "list":
             run_list_molecules(args)
+        elif args.command == "config-sources":
+            run_list_config_sources(args)
         elif args.command == "release-manifest":
             run_release_manifest(args)
     except KeyboardInterrupt:

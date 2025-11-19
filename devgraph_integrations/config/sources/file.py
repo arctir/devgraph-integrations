@@ -2,6 +2,7 @@
 
 This is the default configuration source for the OSS version.
 """
+
 from __future__ import annotations
 
 import os
@@ -87,7 +88,7 @@ class FileConfigSource(ConfigSource):
         """Load configuration from a YAML file.
 
         Args:
-            source_id: Path to the YAML configuration file
+            source_id: Path to the YAML configuration file (can be overridden by DEVGRAPH_FILE_CONFIG_PATH env var)
             **kwargs: Additional parameters (env_prefix for environment overrides)
 
         Returns:
@@ -96,9 +97,16 @@ class FileConfigSource(ConfigSource):
         Raises:
             ConfigSourceError: If file doesn't exist or YAML is invalid
         """
-        path = pathlib.Path(source_id.strip())
+        # Allow source_id to be overridden by environment variable
+        config_path = os.getenv("DEVGRAPH_FILE_CONFIG_PATH", source_id)
+        if not config_path:
+            raise ConfigSourceError(
+                "Config path not specified. Set DEVGRAPH_FILE_CONFIG_PATH env var or pass source_id"
+            )
+
+        path = pathlib.Path(config_path.strip())
         if not path.exists():
-            raise ConfigSourceError(f"Config file not found: {source_id}")
+            raise ConfigSourceError(f"Config file not found: {config_path}")
 
         try:
             data = yaml.safe_load(path.read_text())
@@ -110,5 +118,5 @@ class FileConfigSource(ConfigSource):
         if env_prefix:
             data = override_with_env(data, env_prefix)
 
-        logger.debug(f"Loaded configuration from file: {source_id}")
+        logger.debug(f"Loaded configuration from file: {config_path}")
         return data
