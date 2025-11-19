@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0] - 2025-11-19
+
+### ✨ Features
+
+- feat(ci): extract version-specific changelog for GitHub releases
+- feat(config): add environment variable override support
+- feat(config): improve config source plugin system
+
+### 🐛 Bug Fixes
+
+- fix(ci): move the release creation after complete docker build
+
+### 🔧 Other Changes
+
+- chore: style cleanups
+- refactor(release): combine version bump and changelog into single commit
+
 ## [0.3.3] - 2025-11-19
 
 ### 🐛 Bug Fixes
