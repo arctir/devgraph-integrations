@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.2] - 2025-11-19
+
+### 🐛 Bug Fixes
+
+- fix: update release for better performance
+
+
 ## [0.6.1] - 2025-11-19
 
 ### 🐛 Bug Fixes
