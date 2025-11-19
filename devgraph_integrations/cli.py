@@ -124,61 +124,19 @@ def run_list_config_sources(args):
 def run_release_manifest(args):
     """Generate a release manifest JSON for GitHub releases."""
     import json
-    import tomllib
     from datetime import datetime, timezone
-    from pathlib import Path
+    from importlib.metadata import version
 
-    # Load package version from pyproject.toml
-    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
-    with open(pyproject_path, "rb") as f:
-        pyproject = tomllib.load(f)
+    # Get package version from installed package
+    package_version = version("devgraph-integrations")
 
-    package_version = pyproject["tool"]["poetry"]["version"]
-
-    # Get all molecule metadata (those with __molecule_metadata__)
+    # Get all molecules via stevedore discovery
     molecules = list_all_molecules()
 
-    # Get registered plugins from pyproject.toml to find all molecules
-    molecule_plugins = pyproject["tool"]["poetry"]["plugins"].get(
-        "devgraph.molecules", {}
-    )
-
-    # Build set of all registered molecule names
-    all_molecule_names = set()
-    for plugin_name in molecule_plugins.keys():
-        molecule_name = plugin_name.split(".")[0]
-        all_molecule_names.add(molecule_name)
-
-    # Create molecules list with metadata or fallback info
+    # Create molecules list from stevedore-discovered molecules
     molecules_list = []
-    for molecule_name in sorted(all_molecule_names):
-        if molecule_name in molecules:
-            # Has full metadata
-            molecule_data = molecules[molecule_name].model_dump()
-        else:
-            # Create minimal metadata from plugin registry
-            capabilities = [
-                "discovery"
-            ]  # All molecules in unified namespace have discovery
-
-            molecule_data = {
-                "version": package_version,
-                "name": molecule_name,
-                "display_name": molecule_name.capitalize(),
-                "description": f"{molecule_name.capitalize()} integration provider",
-                "logo": None,
-                "homepage_url": None,
-                "docs_url": None,
-                "capabilities": capabilities,
-                "entity_types": [],
-                "relation_types": [],
-                "requires_auth": True,
-                "auth_types": [],
-                "min_framework_version": "0.1.0",
-                "deprecated": False,
-                "replacement": None,
-            }
-
+    for molecule_name in sorted(molecules.keys()):
+        molecule_data = molecules[molecule_name].model_dump()
         molecules_list.append(molecule_data)
 
     # Build the manifest
