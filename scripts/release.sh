@@ -171,15 +171,6 @@ fi
 info "Updating pyproject.toml version to $NEW_VERSION..."
 sed -i "s/^version = .*/version = \"$NEW_VERSION\"/" pyproject.toml
 
-# Stage the change
-git add pyproject.toml
-
-# Commit version bump
-info "Creating version bump commit..."
-git commit -s -m "chore: bump version to $NEW_VERSION" || {
-    warn "No changes to commit (version may already be set)"
-}
-
 # Generate changelog entry
 CHANGELOG_ENTRY=""
 if [ -n "$LAST_TAG" ] && [ -n "$COMMITS" ]; then
@@ -256,7 +247,6 @@ if [ -f "CHANGELOG.md" ]; then
             tail -n +3 CHANGELOG.md  # Append rest of file
         } > CHANGELOG.md.tmp
         mv CHANGELOG.md.tmp CHANGELOG.md
-        git add CHANGELOG.md
     fi
 else
     info "Creating CHANGELOG.md..."
@@ -266,17 +256,17 @@ else
 
 $CHANGELOG_ENTRY
 EOF
-        git add CHANGELOG.md
     fi
 fi
 
-# Commit changelog if it was updated
-if git diff --cached --quiet; then
-    info "No changelog changes to commit"
-else
-    info "Committing changelog updates..."
-    git commit -s -m "docs: update CHANGELOG.md for $NEW_VERSION"
-fi
+# Stage both pyproject.toml and CHANGELOG.md
+git add pyproject.toml CHANGELOG.md
+
+# Commit version bump and changelog together
+info "Creating version bump commit with changelog..."
+git commit -s -m "chore: bump version to $NEW_VERSION" || {
+    warn "No changes to commit (version may already be set)"
+}
 
 # Create annotated tag with changelog
 info "Creating tag $FULL_VERSION..."
