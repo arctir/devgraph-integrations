@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1] - 2025-11-19
+
+### 🐛 Bug Fixes
+
+- fix: remove references to internal extensions
+
+
 ## [0.3.0] - 2025-11-19
 
 ### ✨ Features
