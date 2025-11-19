@@ -77,11 +77,9 @@ jobs:
 
       - name: Run ruff
         run: poetry run ruff check .
-        continue-on-error: true
 
       - name: Run mypy
         run: poetry run mypy devgraph_integrations
-        continue-on-error: true
 
   conventional-commits:
     runs-on: ubuntu-latest

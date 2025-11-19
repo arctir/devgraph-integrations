@@ -151,6 +151,9 @@ Register your provider via plugin system in `pyproject.toml`:
 # Install dependencies
 poetry install
 
+# Install pre-commit hooks
+poetry run pre-commit install
+
 # Run tests
 poetry run pytest
 
@@ -163,6 +166,9 @@ poetry run isort .
 
 # Type checking
 poetry run mypy devgraph_integrations
+
+# Run all pre-commit hooks manually
+poetry run pre-commit run --all-files
 ```
 
 ### Commit Message Format

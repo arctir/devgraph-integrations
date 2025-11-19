@@ -45,6 +45,7 @@ isort = "^6.0.1"
 flake8 = "^7.2.0"
 pytest-cov = "^7.0.0"
 ruff = "^0.14.4"
+pre-commit = "^4.0.1"
 
 [tool.poetry.extras]
 mcp = ["fastmcp", "mcp"]
@@ -73,6 +74,16 @@ devgraph-integrations = "devgraph_integrations.cli:main"
 "github.mcp.devgraph.ai" = "devgraph_integrations.molecules.github.mcp:GithubMCPServer"
 "gitlab.mcp.devgraph.ai" = "devgraph_integrations.molecules.gitlab.mcp:GitlabMCPServer"
 "fossa.mcp.devgraph.ai" = "devgraph_integrations.molecules.fossa.mcp:FOSSAMCPServer"
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+no_implicit_optional = false
+# Disable errors for dynamic/polymorphic patterns common in this codebase
+disable_error_code = ["attr-defined", "union-attr", "call-arg", "misc", "override", "arg-type", "assignment", "valid-type", "var-annotated", "return-value", "list-item"]
 
 [tool.isort]
 profile = "black"

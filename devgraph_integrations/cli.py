@@ -7,6 +7,7 @@ or set: export PYTHONWARNINGS="ignore::DeprecationWarning"
 
 import argparse
 import asyncio
+import os
 import sys
 
 from loguru import logger
@@ -54,9 +55,8 @@ def run_list_molecules(args):
 
     if args.json:
         import json
-        output = {
-            name: meta.model_dump() for name, meta in molecules.items()
-        }
+
+        output = {name: meta.model_dump() for name, meta in molecules.items()}
         print(json.dumps(output, indent=2))
         return
 
@@ -74,7 +74,9 @@ def run_list_molecules(args):
             entity_types += f" (+{len(meta.entity_types) - 2})"
 
         status = " (deprecated)" if meta.deprecated else ""
-        print(f"{meta.display_name:<15} {meta.version:<10} {capabilities:<30} {entity_types}{status}")
+        print(
+            f"{meta.display_name:<15} {meta.version:<10} {capabilities:<30} {entity_types}{status}"
+        )
 
     print()
 
@@ -124,9 +126,7 @@ def run_release_manifest(args):
             has_discovery = any(
                 p.startswith(f"{molecule_name}.") for p in discovery_plugins.keys()
             )
-            has_mcp = any(
-                p.startswith(f"{molecule_name}.") for p in mcp_plugins.keys()
-            )
+            has_mcp = any(p.startswith(f"{molecule_name}.") for p in mcp_plugins.keys())
 
             capabilities = []
             if has_discovery:
@@ -158,14 +158,20 @@ def run_release_manifest(args):
     manifest = {
         "package": "devgraph-integrations",
         "version": package_version,
-        "release_date": datetime.now(timezone.utc).isoformat() if not args.no_timestamp else None,
+        "release_date": (
+            datetime.now(timezone.utc).isoformat() if not args.no_timestamp else None
+        ),
         "molecules": molecules_list,
         "summary": {
             "total_molecules": len(molecules_list),
-            "discovery_providers": sum(1 for m in molecules_list if "discovery" in m.get("capabilities", [])),
-            "mcp_servers": sum(1 for m in molecules_list if "mcp" in m.get("capabilities", [])),
+            "discovery_providers": sum(
+                1 for m in molecules_list if "discovery" in m.get("capabilities", [])
+            ),
+            "mcp_servers": sum(
+                1 for m in molecules_list if "mcp" in m.get("capabilities", [])
+            ),
             "deprecated": sum(1 for m in molecules_list if m.get("deprecated", False)),
-        }
+        },
     }
 
     print(json.dumps(manifest, indent=2))
@@ -271,8 +277,7 @@ def parse_arguments():
 
     # Release manifest subcommand
     manifest_parser = subparsers.add_parser(
-        "release-manifest",
-        help="Generate release manifest JSON for GitHub releases"
+        "release-manifest", help="Generate release manifest JSON for GitHub releases"
     )
     manifest_parser.add_argument(
         "--no-timestamp",
