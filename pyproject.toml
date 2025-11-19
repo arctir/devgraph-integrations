@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "devgraph-integrations"
-version = "0.3.0"
+version = "0.3.1"
 description = "Integration providers for discovering and syncing entities with Devgraph"
 authors = ["Craig Tracey <craig@arctir.com>"]
 readme = "README.md"
