@@ -139,19 +139,13 @@ def run_release_manifest(args):
     molecules = list_all_molecules()
 
     # Get registered plugins from pyproject.toml to find all molecules
-    discovery_plugins = pyproject["tool"]["poetry"]["plugins"].get(
-        "devgraph.discovery.molecules", {}
-    )
-    mcp_plugins = pyproject["tool"]["poetry"]["plugins"].get(
-        "devgraph.mcpserver.plugins", {}
+    molecule_plugins = pyproject["tool"]["poetry"]["plugins"].get(
+        "devgraph.molecules", {}
     )
 
     # Build set of all registered molecule names
     all_molecule_names = set()
-    for plugin_name in discovery_plugins.keys():
-        molecule_name = plugin_name.split(".")[0]
-        all_molecule_names.add(molecule_name)
-    for plugin_name in mcp_plugins.keys():
+    for plugin_name in molecule_plugins.keys():
         molecule_name = plugin_name.split(".")[0]
         all_molecule_names.add(molecule_name)
 
@@ -163,16 +157,9 @@ def run_release_manifest(args):
             molecule_data = molecules[molecule_name].model_dump()
         else:
             # Create minimal metadata from plugin registry
-            has_discovery = any(
-                p.startswith(f"{molecule_name}.") for p in discovery_plugins.keys()
-            )
-            has_mcp = any(p.startswith(f"{molecule_name}.") for p in mcp_plugins.keys())
-
-            capabilities = []
-            if has_discovery:
-                capabilities.append("discovery")
-            if has_mcp:
-                capabilities.append("mcp")
+            capabilities = [
+                "discovery"
+            ]  # All molecules in unified namespace have discovery
 
             molecule_data = {
                 "version": package_version,

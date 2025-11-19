@@ -113,22 +113,17 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.8.3
-
-      - name: Install dependencies
-        run: poetry install --no-interaction
-
-      - name: Generate release manifest
+      - name: Generate release manifest from Docker image
         run: |
-          poetry run python -m devgraph_integrations.cli release-manifest > release-manifest.json
+          # Extract first tag from metadata output
+          IMAGE_TAG=$(echo "${{ steps.meta.outputs.tags }}" | head -n1)
+          echo "Generating manifest from image: $IMAGE_TAG"
+
+          # Pull the image we just built
+          docker pull --platform linux/amd64 "$IMAGE_TAG"
+
+          # Generate manifest from the Docker image
+          docker run --rm "$IMAGE_TAG" release-manifest > release-manifest.json
           cat release-manifest.json
 
       - name: Extract changelog for this version
