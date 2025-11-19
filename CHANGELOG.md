@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2] - 2025-11-19
+
+### 🐛 Bug Fixes
+
+- fix(ci): address failing lint and mypy issues
+
+
 ## [0.3.1] - 2025-11-19
 
 ### 🐛 Bug Fixes
@@ -32,5 +39,3 @@
 ### 🐛 Bug Fixes
 
 - fix(release): trim whitespace from commit counts to prevent integer comparison errors
-
-
