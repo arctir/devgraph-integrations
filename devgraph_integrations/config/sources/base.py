@@ -9,6 +9,7 @@ Example plugin registration in pyproject.toml:
     [tool.poetry.plugins."devgraph_integrations.config.sources"]
     "api" = "my_package.config:APIConfigSource"
 """
+
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
@@ -56,6 +57,7 @@ class ConfigSource(ABC):
 
 class ConfigSourceError(Exception):
     """Raised when a configuration source fails to load config."""
+
     pass
 
 
@@ -63,6 +65,7 @@ class ConfigSourceManager:
     """Manages configuration source plugins via stevedore."""
 
     NAMESPACE = "devgraph_integrations.config.sources"
+    DEFAULT_SOURCE = "file"
 
     def __init__(self):
         """Initialize the config source manager and load plugins."""
@@ -97,11 +100,14 @@ class ConfigSourceManager:
             # No plugins found - this is fine for OSS version
             logger.debug(f"No config source plugins found: {e}")
 
-    def get_source(self, source_type: str | None = None, source_id: str | None = None) -> ConfigSource:
+    def get_source(
+        self, source_type: str | None = None, source_id: str | None = None
+    ) -> ConfigSource:
         """Get a configuration source by type or auto-detect from source_id.
 
         Args:
-            source_type: Explicit source type name (e.g., "file", "api")
+            source_type: Explicit source type name (e.g., "file", "api").
+                        If None, auto-detects based on source_id.
             source_id: Source identifier (e.g., file path, URL) for auto-detection
 
         Returns:
@@ -114,7 +120,10 @@ class ConfigSourceManager:
         if source_type:
             if source_type in self._sources:
                 return self._sources[source_type]
-            raise ConfigSourceError(f"Unknown config source type: {source_type}")
+            raise ConfigSourceError(
+                f"Config source '{source_type}' not found. "
+                f"Available sources: {list(self._sources.keys())}"
+            )
 
         # Auto-detect based on source_id
         if source_id:
@@ -123,9 +132,15 @@ class ConfigSourceManager:
                     logger.debug(f"Auto-detected config source: {name}")
                     return source
 
+        # Fall back to default source if available
+        if self.DEFAULT_SOURCE in self._sources:
+            logger.debug(f"Using default config source: {self.DEFAULT_SOURCE}")
+            return self._sources[self.DEFAULT_SOURCE]
+
         raise ConfigSourceError(
             f"No config source found for source_id: {source_id}. "
-            f"Available sources: {list(self._sources.keys())}"
+            f"Available sources: {list(self._sources.keys())}. "
+            f"Default source '{self.DEFAULT_SOURCE}' not available."
         )
 
     def list_sources(self) -> list[str]:

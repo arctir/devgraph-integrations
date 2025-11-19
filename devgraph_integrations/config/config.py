@@ -8,7 +8,6 @@ from .base import SensitiveBaseModel
 from .discovery import DiscoveryConfig
 from .mcp import MCPServerConfig
 from .sources import ConfigSourceError, get_config_source_manager
-from .sources.file import FileConfigSource
 
 
 class Config(SensitiveBaseModel):
@@ -18,19 +17,16 @@ class Config(SensitiveBaseModel):
     mcp: MCPServerConfig | None = None
 
     @staticmethod
-    def from_source(
-        source_id: str,
-        source_type: str | None = None,
-        **kwargs
-    ) -> Config:
+    def from_source(source_id: str, source_type: str | None = None, **kwargs) -> Config:
         """Load configuration from a pluggable source.
 
         Uses stevedore-based extension system to load configuration from various
-        sources. Default implementation uses file-based configuration.
+        sources. The default source is 'file' for file-based configuration.
 
         Args:
             source_id: Source identifier (e.g., file path, API URL)
-            source_type: Optional explicit source type (e.g., "file", "api")
+            source_type: Optional explicit source type (e.g., "file", "api").
+                        If not specified, auto-detects based on source_id or uses default.
             **kwargs: Additional source-specific parameters
 
         Returns:
@@ -41,13 +37,10 @@ class Config(SensitiveBaseModel):
         """
         manager = get_config_source_manager()
 
-        # If no plugins found, register the default file source
-        if not manager.list_sources():
-            logger.debug("No config source plugins found, using default file source")
-            manager._sources["file"] = FileConfigSource()
-
         try:
             source = manager.get_source(source_type=source_type, source_id=source_id)
+            source_name = source.__class__.__name__
+            logger.info(f"Loading configuration from '{source_name}' source")
             data = source.load(source_id, **kwargs)
             return Config(**data)
         except ConfigSourceError as e:
@@ -69,4 +62,6 @@ class Config(SensitiveBaseModel):
         Raises:
             ConfigSourceError: If configuration cannot be loaded
         """
-        return Config.from_source(config_path, source_type="file", env_prefix="DEVGRAPH_CFG_")
+        return Config.from_source(
+            config_path, source_type="file", env_prefix="DEVGRAPH_CFG_"
+        )
