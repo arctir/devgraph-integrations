@@ -35,8 +35,8 @@ fi
 CURRENT_VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
 info "Current version in pyproject.toml: $CURRENT_VERSION"
 
-# Get last git tag
-LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "")
+# Get last git tag (use --list with version sorting to find highest version tag)
+LAST_TAG=$(git tag --list 'v*' --sort=-version:refname 2>/dev/null | head -n1 | sed 's/^v//' || echo "")
 if [ -n "$LAST_TAG" ]; then
     info "Last git tag: v$LAST_TAG"
 
