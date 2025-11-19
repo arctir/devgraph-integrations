@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0] - 2025-11-19
+
+### ✨ Features
+
+- feat: unified molecule architecture with dynamic config sources
+
+
 ## [0.4.0] - 2025-11-19
 
 ### ✨ Features
