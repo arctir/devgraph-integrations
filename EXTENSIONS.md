@@ -1,10 +1,10 @@
 # Extension Points
 
-This document describes the extension points available in devgraph-integrations for internal deployments.
+This document describes the extension points available in devgraph-integrations for custom deployments.
 
 ## Configuration Sources
 
-The configuration system uses stevedore to allow pluggable configuration sources. The default implementation loads configuration from YAML files, but internal deployments can add additional sources like APIs or databases.
+The configuration system uses stevedore to allow pluggable configuration sources. The default implementation loads configuration from YAML files, but custom deployments can add additional sources like APIs or databases.
 
 ### Creating a Custom Config Source
 
@@ -15,11 +15,11 @@ from devgraph_integrations.config.sources import ConfigSource, ConfigSourceError
 from typing import Any
 
 class APIConfigSource(ConfigSource):
-    """Load configuration from an internal API."""
+    """Load configuration from an API."""
 
     def supports(self, source_id: str) -> bool:
         """Check if source_id is an API URL."""
-        return source_id.startswith("https://api.internal/")
+        return source_id.startswith("https://api.example.com/")
 
     def load(self, source_id: str, **kwargs) -> dict[str, Any]:
         """Load configuration from API.
@@ -48,11 +48,11 @@ class APIConfigSource(ConfigSource):
         return response.json()
 ```
 
-2. Register the plugin in your internal package's `pyproject.toml`:
+2. Register the plugin in your package's `pyproject.toml`:
 
 ```toml
 [tool.poetry.plugins."devgraph_integrations.config.sources"]
-"api" = "devgraph_internal.config:APIConfigSource"
+"api" = "my_package.config:APIConfigSource"
 ```
 
 3. Use the custom source:
@@ -62,41 +62,26 @@ from devgraph_integrations.config import Config
 
 # Explicitly specify source type
 config = Config.from_source(
-    "https://api.internal/config",
+    "https://api.example.com/config",
     source_type="api",
     environment_id="prod",
     auth_token="xxx"
 )
 
 # Or let it auto-detect based on URL pattern
-config = Config.from_source("https://api.internal/config")
-```
-
-## Database Integration
-
-For features that require database access (like provider version checking), create internal-only modules that import from the internal `devgraph` package. These modules should not be included in the public distribution.
-
-Example structure:
-
-```
-devgraph-internal/
-├── pyproject.toml
-├── devgraph_internal/
-│   ├── config.py           # APIConfigSource implementation
-│   ├── version_checker.py  # Database-backed version checking
-│   └── ...
+config = Config.from_source("https://api.example.com/config")
 ```
 
 ## Provider Extensions
 
-The provider system already uses stevedore for discovery. To add internal-only providers:
+The provider system already uses stevedore for discovery. To add custom providers:
 
 1. Create your provider class extending the base `Provider`
-2. Register it via stevedore in your internal package
+2. Register it via stevedore in your package
 3. Reference it in configuration by the plugin name
 
 ## Discovery Extensions
 
-The `DiscoveryExtensionManager` class provides hooks for extending discovery behavior. Internal deployments can use this to add custom processing logic for entities and relations.
+The `DiscoveryExtensionManager` class provides hooks for extending discovery behavior. Custom deployments can use this to add custom processing logic for entities and relations.
 
 See `devgraph_integrations/core/extension.py` for available hooks.

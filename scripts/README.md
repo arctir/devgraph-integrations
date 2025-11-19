@@ -59,17 +59,6 @@ WARNING: Version mismatch detected!
 
 This helps ensure the repository stays consistent.
 
-### After OSS Release
-
-After creating an OSS release, you'll want to create a corresponding internal release:
-
-```bash
-cd ../devgraph-integrations-internal
-./scripts/release.sh
-```
-
-This will create an internal release like `v0.1.0-arctir.1` that tracks the OSS version.
-
 ### Semantic Versioning Guidelines
 
 - **PATCH** (`v0.1.0` → `v0.1.1`): Bug fixes, minor changes

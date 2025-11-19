@@ -27,7 +27,7 @@ warn() {
 }
 
 # Check if we're in the right directory
-if [ ! -f "pyproject.toml" ] || ! grep -q "devgraph-integrations" pyproject.toml || grep -q "devgraph-integrations-internal" pyproject.toml; then
+if [ ! -f "pyproject.toml" ] || ! grep -q "devgraph-integrations" pyproject.toml; then
     error "Must be run from devgraph-integrations repository root"
 fi
 
@@ -270,6 +270,14 @@ EOF
     fi
 fi
 
+# Commit changelog if it was updated
+if git diff --cached --quiet; then
+    info "No changelog changes to commit"
+else
+    info "Committing changelog updates..."
+    git commit -s -m "docs: update CHANGELOG.md for $NEW_VERSION"
+fi
+
 # Create annotated tag with changelog
 info "Creating tag $FULL_VERSION..."
 TAG_MESSAGE="Release $FULL_VERSION
@@ -295,6 +303,3 @@ info "  - Docker images to ghcr.io/arctir/devgraph-integrations"
 info "  - GitHub Release with auto-generated notes"
 info ""
 info "View the release at: https://github.com/arctir/devgraph-integrations/releases/tag/$FULL_VERSION"
-echo ""
-warn "REMINDER: After this OSS release is complete, you may want to create"
-warn "a corresponding internal release with: cd ../devgraph-integrations-internal && ./scripts/release.sh"

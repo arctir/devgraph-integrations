@@ -98,19 +98,6 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
             if metadata:
                 result[metadata.name] = metadata
 
-    # Also scan internal package if available
-    try:
-        import devgraph_integrations_internal.molecules as internal_pkg
-        for importer, modname, ispkg in pkgutil.iter_modules(internal_pkg.__path__):
-            if ispkg and not modname.startswith("_"):
-                module_path = f"devgraph_integrations_internal.molecules.{modname}"
-                metadata = get_molecule_metadata(module_path)
-                if metadata:
-                    result[metadata.name] = metadata
-    except ImportError:
-        # Internal package not installed, that's okay
-        pass
-
     return result
 
 

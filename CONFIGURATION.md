@@ -476,7 +476,7 @@ If you hit API rate limits:
 
 ### Extending Configuration
 
-For internal deployments, molecule configuration can be extended via stevedore plugins to add:
+Molecule configuration can be extended via stevedore plugins to add:
 - Encrypted secret fields
 - API-based configuration fetching
 - Custom validation logic

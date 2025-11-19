@@ -1,13 +1,13 @@
 """Configuration source extension system.
 
 This module provides a pluggable system for loading configuration from different sources.
-The OSS version uses file-based configuration, while internal deployments can add
-API-based configuration sources via stevedore plugins.
+The default configuration source is file-based, but additional configuration sources
+can be added via stevedore plugins.
 
 Example plugin registration in pyproject.toml:
 
     [tool.poetry.plugins."devgraph_integrations.config.sources"]
-    "api" = "my_internal_package.config:APIConfigSource"
+    "api" = "my_package.config:APIConfigSource"
 """
 from __future__ import annotations
 

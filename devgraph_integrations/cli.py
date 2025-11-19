@@ -94,7 +94,6 @@ def run_release_manifest(args):
     package_version = pyproject["tool"]["poetry"]["version"]
 
     # Get all molecule metadata (those with __molecule_metadata__)
-    # This now automatically scans both OSS and internal packages
     molecules = list_all_molecules()
 
     # Get registered plugins from pyproject.toml to find all molecules
@@ -104,38 +103,6 @@ def run_release_manifest(args):
     mcp_plugins = pyproject["tool"]["poetry"]["plugins"].get(
         "devgraph.mcpserver.plugins", {}
     )
-
-    # Also check for internal package plugins if available
-    try:
-        import devgraph_integrations_internal
-        # Try to find internal pyproject.toml
-        # Could be at: devgraph_integrations_internal/../pyproject.toml or devgraph_integrations_internal/pyproject.toml
-        internal_pkg_path = Path(devgraph_integrations_internal.__file__).parent
-
-        internal_pyproject_path = None
-        # First try same directory (internal package location)
-        if (internal_pkg_path / "pyproject.toml").exists():
-            internal_pyproject_path = internal_pkg_path / "pyproject.toml"
-        # Then try parent directory (fallback)
-        elif (internal_pkg_path.parent / "pyproject.toml").exists():
-            internal_pyproject_path = internal_pkg_path.parent / "pyproject.toml"
-
-        if internal_pyproject_path and internal_pyproject_path.exists():
-            with open(internal_pyproject_path, "rb") as f:
-                internal_pyproject = tomllib.load(f)
-
-            internal_discovery = internal_pyproject.get("tool", {}).get("poetry", {}).get("plugins", {}).get(
-                "devgraph.discovery.molecules", {}
-            )
-            internal_mcp = internal_pyproject.get("tool", {}).get("poetry", {}).get("plugins", {}).get(
-                "devgraph.mcpserver.plugins", {}
-            )
-
-            discovery_plugins.update(internal_discovery)
-            mcp_plugins.update(internal_mcp)
-    except (ImportError, FileNotFoundError, Exception):
-        # Internal package not installed or pyproject.toml not found, that's okay
-        pass
 
     # Build set of all registered molecule names
     all_molecule_names = set()

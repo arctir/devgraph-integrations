@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.0] - 2025-11-19
+
+### ✨ Features
+
+- feat(discover): allow for alternate config sources via extension
+
+### 🐛 Bug Fixes
+
+- fix(release): update how we calculate last tag
+
+### 🔧 Other Changes
+
+- chore: bump version to 0.2.0
+
 ## [0.2.0] - 2025-11-18
 
 ### ✨ Features
