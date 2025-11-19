@@ -34,4 +34,9 @@ __molecule_metadata__ = {
     "min_framework_version": "0.1.0",
 }
 
-__all__ = ["GrafanaProvider", "GrafanaProviderConfig", "__version__", "__molecule_metadata__"]
+__all__ = [
+    "GrafanaProvider",
+    "GrafanaProviderConfig",
+    "__version__",
+    "__molecule_metadata__",
+]

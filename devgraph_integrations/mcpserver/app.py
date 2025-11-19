@@ -1,6 +1,8 @@
 import os
-from .server import DevgraphMCPSever
+
 from devgraph_integrations.config import Config
+
+from .server import DevgraphMCPSever
 
 config_path = os.getenv("DEVGRAPH_CONFIG", "/etc/devgraph/config.yaml")
 

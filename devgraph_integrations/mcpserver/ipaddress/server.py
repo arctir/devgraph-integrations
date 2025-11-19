@@ -4,7 +4,7 @@ from argparse import Namespace
 import dotenv  # type: ignore
 import ipinfo  # type: ignore
 from mcp.server.fastmcp import FastMCP  # type: ignore
-from pydantic import BaseModel, IPvAnyAddress, ConfigDict
+from pydantic import BaseModel, ConfigDict, IPvAnyAddress
 
 dotenv.load_dotenv()
 

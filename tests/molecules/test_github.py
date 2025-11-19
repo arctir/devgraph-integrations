@@ -1,14 +1,15 @@
 """Tests for GitHub molecule provider."""
+
 import pytest
 from tests.framework import HTTPMoleculeTestCase
 
-from devgraph_integrations.molecules.github.provider import GithubProvider
 from devgraph_integrations.molecules.github.config import (
-    GithubProviderConfig,
-    GithubPATAuth,
     GithubAppAuth,
+    GithubPATAuth,
+    GithubProviderConfig,
     GithubSelectorConfig,
 )
+from devgraph_integrations.molecules.github.provider import GithubProvider
 
 
 class TestGitHubMolecule(HTTPMoleculeTestCase):
@@ -108,8 +109,12 @@ class TestGitHubMolecule(HTTPMoleculeTestCase):
         kinds = [d.kind for d in definitions]
         # Check case-insensitively for repository and hosting service
         kinds_lower = [k.lower() for k in kinds]
-        assert any("repository" in k for k in kinds_lower), f"No repository kind found in {kinds}"
-        assert any("hosting" in k for k in kinds_lower), f"No hosting service kind found in {kinds}"
+        assert any(
+            "repository" in k for k in kinds_lower
+        ), f"No repository kind found in {kinds}"
+        assert any(
+            "hosting" in k for k in kinds_lower
+        ), f"No hosting service kind found in {kinds}"
 
     def test_pat_auth_helper_properties(self):
         """Test authentication helper properties."""

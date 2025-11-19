@@ -20,7 +20,9 @@ class MCPServerConfig(BaseModel):
     """Configuration for the MCP server."""
 
     name: str = Field(default="DevgraphMCPServer", description="Name of the MCP server")
-    host: str = Field(default="127.0.0.1", description="Host address to bind the MCP server")
+    host: str = Field(
+        default="127.0.0.1", description="Host address to bind the MCP server"
+    )
     port: int = Field(default=9000, description="Port number for the MCP server")
     molecules: list[MoleculeConfig] = Field(
         default_factory=list, description="Molecule configurations for MCP tools"

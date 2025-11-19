@@ -3,20 +3,22 @@
 This module provides an LDAP provider that discovers and synchronizes
 LDAP directory objects into the Devgraph entity system.
 """
-from typing import List, Dict, Any, Optional
+
+from typing import Any, Dict, List, Optional
+
 from loguru import logger
 
-from devgraph_integrations.types.entities import Entity
 from devgraph_integrations.molecules.base.reconciliation import (
-    ReconcilingMoleculeProvider,
     FullStateReconciliation,
+    ReconcilingMoleculeProvider,
 )
+from devgraph_integrations.types.entities import Entity
 
 from .client import LdapClient
 from .config import LdapProviderConfig
-from .types.v1_ldap_user import V1LdapUserEntity, V1LdapUserEntitySpec
 from .types.v1_ldap_group import V1LdapGroupEntity, V1LdapGroupEntitySpec
 from .types.v1_ldap_org_unit import V1LdapOrgUnitEntity, V1LdapOrgUnitEntitySpec
+from .types.v1_ldap_user import V1LdapUserEntity, V1LdapUserEntitySpec
 
 
 class LdapProvider(ReconcilingMoleculeProvider):
@@ -336,13 +338,13 @@ class LdapProvider(ReconcilingMoleculeProvider):
             List of relation objects
         """
         from .types.relations import (
+            LdapGroupBelongsToOrgUnitRelation,
+            LdapGroupManagedByUserRelation,
+            LdapGroupOwnedByUserRelation,
+            LdapOrgUnitBelongsToOrgUnitRelation,
+            LdapUserBelongsToOrgUnitRelation,
             LdapUserMemberOfGroupRelation,
             LdapUserReportsToUserRelation,
-            LdapUserBelongsToOrgUnitRelation,
-            LdapGroupBelongsToOrgUnitRelation,
-            LdapOrgUnitBelongsToOrgUnitRelation,
-            LdapGroupOwnedByUserRelation,
-            LdapGroupManagedByUserRelation,
         )
 
         relations = []

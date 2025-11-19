@@ -24,9 +24,9 @@ import argparse
 import re
 import subprocess
 from pathlib import Path
-from typing import List, Tuple, Optional
-from packaging import version
+from typing import List, Optional, Tuple
 
+from packaging import version
 
 MOLECULES_DIR = Path(__file__).parent.parent / "devgraph_integrations" / "molecules"
 
@@ -149,14 +149,14 @@ def update_version_in_file(init_file: Path, new_version: str) -> None:
     content = init_file.read_text()
     updated = re.sub(
         r'(__version__\s*=\s*["\'])[^"\']+(["\'])',
-        rf'\g<1>{new_version}\g<2>',
+        rf"\g<1>{new_version}\g<2>",
         content,
     )
 
     # Also update in metadata dict
     updated = re.sub(
         r'("version":\s*__version__|"version":\s*["\'])[^"\']+(["\'])',
-        rf'\g<1>{new_version}\g<2>',
+        rf"\g<1>{new_version}\g<2>",
         updated,
     )
 
@@ -165,7 +165,9 @@ def update_version_in_file(init_file: Path, new_version: str) -> None:
 
 def main():
     parser = argparse.ArgumentParser(description="Bump molecule versions")
-    parser.add_argument("--dry-run", action="store_true", help="Show changes without applying")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show changes without applying"
+    )
     parser.add_argument("--molecule", help="Bump specific molecule only")
     parser.add_argument("--since-tag", help="Check commits since this git tag")
     args = parser.parse_args()
@@ -178,7 +180,9 @@ def main():
         return
 
     # Discover molecules
-    molecules = [d for d in MOLECULES_DIR.iterdir() if d.is_dir() and not d.name.startswith("_")]
+    molecules = [
+        d for d in MOLECULES_DIR.iterdir() if d.is_dir() and not d.name.startswith("_")
+    ]
 
     if args.molecule:
         molecules = [m for m in molecules if m.name == args.molecule]
@@ -214,7 +218,9 @@ def main():
         bump_type = determine_bump_type(molecule_commits)
 
         if bump_type == "none":
-            print(f"ℹ️  {molecule_name}: No version-bumping commits, staying at v{current_version}")
+            print(
+                f"ℹ️  {molecule_name}: No version-bumping commits, staying at v{current_version}"
+            )
             continue
 
         # Calculate new version

@@ -1,4 +1,5 @@
 """FOSSA relation definitions."""
+
 from devgraph_integrations.types.entities import EntityRelation
 
 

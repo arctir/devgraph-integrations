@@ -1,9 +1,10 @@
 """Tests for Argo CD molecule provider."""
+
 import pytest
 from tests.framework import HTTPMoleculeTestCase
 
-from devgraph_integrations.molecules.argo.provider import ArgoProvider
 from devgraph_integrations.molecules.argo.config import ArgoProviderConfig
+from devgraph_integrations.molecules.argo.provider import ArgoProvider
 
 
 class TestArgoMolecule(HTTPMoleculeTestCase):

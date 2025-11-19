@@ -1,4 +1,7 @@
-from devgraph_integrations.types.entities import EntityRelation, FieldSelectedEntityRelation
+from devgraph_integrations.types.entities import (
+    EntityRelation,
+    FieldSelectedEntityRelation,
+)
 
 
 class VercelProjectBelongsToTeamRelation(EntityRelation):

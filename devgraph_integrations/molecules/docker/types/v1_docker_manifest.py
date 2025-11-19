@@ -3,7 +3,8 @@
 This module defines the entity type for Docker image manifests.
 """
 
-from typing import Optional, List
+from typing import List, Optional
+
 from pydantic import Field
 
 from devgraph_integrations.core.base import EntityDefinition

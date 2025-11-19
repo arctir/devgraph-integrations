@@ -1,6 +1,8 @@
 """Molecule metadata management."""
-from typing import Dict, Optional, List
+
 from importlib import import_module
+from typing import Dict, List, Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -13,14 +15,12 @@ class MoleculeMetadata(BaseModel):
     description: str = Field(description="Brief description of what the molecule does")
     logo: Dict[str, str] = Field(
         default_factory=dict,
-        description="Logo sources: reactIcons (icon identifier like 'SiGithub' or 'PiFile'), url, or svg"
+        description="Logo sources: reactIcons (icon identifier like 'SiGithub' or 'PiFile'), url, or svg",
     )
     homepage_url: Optional[str] = Field(
         default=None, description="Homepage or product URL"
     )
-    docs_url: Optional[str] = Field(
-        default=None, description="Documentation URL"
-    )
+    docs_url: Optional[str] = Field(default=None, description="Documentation URL")
     capabilities: List[str] = Field(
         default_factory=list,
         description="List of capabilities: discovery, mcp, relations, etc.",
@@ -41,7 +41,9 @@ class MoleculeMetadata(BaseModel):
     min_framework_version: str = Field(
         default="0.1.0", description="Minimum devgraph-integrations version required"
     )
-    deprecated: bool = Field(default=False, description="Whether molecule is deprecated")
+    deprecated: bool = Field(
+        default=False, description="Whether molecule is deprecated"
+    )
     replacement: Optional[str] = Field(
         default=None, description="Replacement molecule if deprecated"
     )
@@ -86,6 +88,7 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
         GitHub: discovery, mcp
     """
     import pkgutil
+
     import devgraph_integrations.molecules as molecules_pkg
 
     result = {}
@@ -101,9 +104,7 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
     return result
 
 
-def check_version_compatibility(
-    molecule_version: str, required_version: str
-) -> bool:
+def check_version_compatibility(molecule_version: str, required_version: str) -> bool:
     """
     Check if molecule version meets minimum requirement.
 

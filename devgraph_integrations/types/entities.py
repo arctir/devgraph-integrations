@@ -1,9 +1,9 @@
-from typing import Any, Dict, List, Optional
-from datetime import datetime, timezone
 import uuid
+from datetime import datetime, timezone
+from typing import Any, Dict, List, Optional
 
 import inflect
-from pydantic import BaseModel, computed_field, Field
+from pydantic import BaseModel, Field, computed_field
 
 
 class EntityReference(BaseModel):
@@ -53,7 +53,10 @@ class FieldSelector(BaseModel):
 
     @classmethod
     def from_string(
-        cls, selector: str, api_version: Optional[str] = None, kind: Optional[str] = None
+        cls,
+        selector: str,
+        api_version: Optional[str] = None,
+        kind: Optional[str] = None,
     ) -> "FieldSelector":
         """Create a FieldSelector from a string like 'spec.owner=team-a' with optional entity type."""
         if "=" not in selector:

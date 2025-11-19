@@ -6,8 +6,9 @@ human entities and organizational structures within the Devgraph system.
 These types serve as base types for users, developers, operators, teams,
 and organizational units across different providers.
 """
-from typing import Optional, Literal
+
 from enum import Enum
+from typing import Literal, Optional
 
 from devgraph_integrations.core.base import EntityDefinition
 from devgraph_integrations.types.entities import Entity, EntitySpec
@@ -105,7 +106,9 @@ class V1PersonEntityDefinition(EntityDefinition[V1PersonEntitySpec]):
     spec_class: type = V1PersonEntitySpec
     display_name: str = "Person"
     characteristics: list = ["individual", "human"]
-    description: str = "Meta type for individuals including developers, users, maintainers, and stakeholders"
+    description: str = (
+        "Meta type for individuals including developers, users, maintainers, and stakeholders"
+    )
 
 
 class V1TeamEntityDefinition(EntityDefinition[V1TeamEntitySpec]):
@@ -120,7 +123,9 @@ class V1TeamEntityDefinition(EntityDefinition[V1TeamEntitySpec]):
     spec_class: type = V1TeamEntitySpec
     display_name: str = "Team"
     characteristics: list = ["group", "organization", "human"]
-    description: str = "Meta type for groups of people including development teams, organizations, and departments"
+    description: str = (
+        "Meta type for groups of people including development teams, organizations, and departments"
+    )
 
 
 class V1PersonEntity(Entity):

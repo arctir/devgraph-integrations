@@ -5,6 +5,7 @@ and hosting services as entities in the Devgraph system. It integrates with the
 GitLab API to fetch project information and create corresponding entities
 and relationships.
 """
+
 import re
 from base64 import b64decode
 
@@ -14,11 +15,11 @@ from loguru import logger
 
 from devgraph_integrations.core.entity import EntityDefinitionSpec
 from devgraph_integrations.core.file_parser import parse_entity_file
-from devgraph_integrations.types.entities import EntityMetadata, Entity
 from devgraph_integrations.molecules.base.reconciliation import (
-    ReconcilingMoleculeProvider,
     FullStateReconciliation,
+    ReconcilingMoleculeProvider,
 )
+from devgraph_integrations.types.entities import Entity, EntityMetadata
 
 from .config import GitlabProviderConfig
 from .types.relations import GitlabProjectHostedByRelation
@@ -190,10 +191,18 @@ class GitlabProvider(ReconcilingMoleculeProvider):
             except Exception as e:
                 error_msg = str(e)
                 # Check if it's an authentication error - don't print full traceback for these
-                if "401" in error_msg or "invalid_token" in error_msg or "unauthorized" in error_msg.lower():
-                    logger.error(f"Authentication failed for GitLab group {selector.group}. Please check your token configuration.")
+                if (
+                    "401" in error_msg
+                    or "invalid_token" in error_msg
+                    or "unauthorized" in error_msg.lower()
+                ):
+                    logger.error(
+                        f"Authentication failed for GitLab group {selector.group}. Please check your token configuration."
+                    )
                 else:
-                    logger.exception(f"Could not access GitLab group {selector.group}: {e}")
+                    logger.exception(
+                        f"Could not access GitLab group {selector.group}: {e}"
+                    )
                 continue
 
         logger.info(f"GitLab provider discovered {len(entities)} total entities:")

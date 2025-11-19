@@ -1,4 +1,4 @@
-from typing import Annotated, Any, Dict, Generic, List, Type, TypeVar, Optional
+from typing import Annotated, Any, Dict, Generic, List, Optional, Type, TypeVar
 
 from pydantic import BaseModel, constr
 
@@ -14,12 +14,12 @@ class EntityDefinitionSpec(BaseModel):
     description: Annotated[
         str, constr(min_length=1)
     ]  # Description of what this entity type represents
-    display_name: Optional[
-        str
-    ] = None  # Human-readable display name (e.g., "GitHub Repository")
-    characteristics: Optional[
-        List[str]
-    ] = None  # Optional list of characteristics (e.g., ["source_code", "git"])
+    display_name: Optional[str] = (
+        None  # Human-readable display name (e.g., "GitHub Repository")
+    )
+    characteristics: Optional[List[str]] = (
+        None  # Optional list of characteristics (e.g., ["source_code", "git"])
+    )
 
     def to_dict(self) -> dict:
         result = {

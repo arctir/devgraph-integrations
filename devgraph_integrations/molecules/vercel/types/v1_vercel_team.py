@@ -22,7 +22,9 @@ class V1VercelTeamEntityDefinition(EntityDefinition[V1VercelTeamEntitySpec]):
     singular: str = "vercelteam"
     name: str = "v1"
     spec_class: type = V1VercelTeamEntitySpec
-    description: str = "A Vercel team that groups members and manages organizational access and permissions"
+    description: str = (
+        "A Vercel team that groups members and manages organizational access and permissions"
+    )
 
 
 class V1VercelTeamEntity(Entity):

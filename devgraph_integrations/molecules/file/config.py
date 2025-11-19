@@ -3,7 +3,9 @@
 This module defines the configuration classes used to configure the File
 provider, including glob patterns for finding .devgraph.yaml files.
 """
+
 from typing import List
+
 from pydantic import Field
 
 from devgraph_integrations.molecules.base.config import MoleculeProviderConfig

@@ -4,8 +4,8 @@ This module provides integration with Docker registries to discover and manage
 container images, repositories, and registry metadata as entities in Devgraph.
 """
 
-from .provider import DockerProvider
 from .config import DockerProviderConfig
+from .provider import DockerProvider
 
 __version__ = "1.0.0"
 __molecule_metadata__ = {
@@ -34,4 +34,9 @@ __molecule_metadata__ = {
     "min_framework_version": "0.1.0",
 }
 
-__all__ = ["DockerProvider", "DockerProviderConfig", "__version__", "__molecule_metadata__"]
+__all__ = [
+    "DockerProvider",
+    "DockerProviderConfig",
+    "__version__",
+    "__molecule_metadata__",
+]

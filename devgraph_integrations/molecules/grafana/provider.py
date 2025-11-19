@@ -3,17 +3,19 @@
 This module implements a provider that discovers and manages Grafana dashboards,
 datasources, folders, and alerts as entities in the Devgraph system.
 """
+
+from typing import Any
+
 import requests  # type: ignore
 from loguru import logger
-from typing import Any
 
 from devgraph_integrations.core.entity import EntityDefinitionSpec
 from devgraph_integrations.core.state import GraphMutations
-from devgraph_integrations.types.entities import EntityMetadata, Entity
 from devgraph_integrations.molecules.base.reconciliation import (
-    ReconcilingMoleculeProvider,
     FullStateReconciliation,
+    ReconcilingMoleculeProvider,
 )
+from devgraph_integrations.types.entities import Entity, EntityMetadata
 
 from .config import GrafanaProviderConfig
 
@@ -61,10 +63,10 @@ class GrafanaProvider(ReconcilingMoleculeProvider):
         Returns:
             List of entity definition specifications
         """
-        from .types.v1_grafana_instance import V1GrafanaInstanceEntityDefinition
         from .types.v1_grafana_dashboard import V1GrafanaDashboardEntityDefinition
         from .types.v1_grafana_datasource import V1GrafanaDatasourceEntityDefinition
         from .types.v1_grafana_folder import V1GrafanaFolderEntityDefinition
+        from .types.v1_grafana_instance import V1GrafanaInstanceEntityDefinition
 
         definitions = [
             V1GrafanaInstanceEntityDefinition,

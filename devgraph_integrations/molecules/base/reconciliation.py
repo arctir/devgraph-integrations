@@ -5,15 +5,16 @@ in sync with source systems, including proper deletion detection and
 entity lifecycle management.
 """
 
-from abc import ABC, abstractmethod
-from typing import List, Tuple
-from datetime import datetime, timezone
 import hashlib
 import json
+from abc import ABC, abstractmethod
+from datetime import datetime, timezone
+from typing import List, Tuple
+
+from devgraph_client.api.entities import get_entities
+from devgraph_client.client import AuthenticatedClient
 from loguru import logger
 
-from devgraph_client.client import AuthenticatedClient
-from devgraph_client.api.entities import get_entities
 from devgraph_integrations.core.state import GraphMutations
 from devgraph_integrations.types.entities import Entity, EntityReference
 
@@ -286,9 +287,9 @@ class FullStateReconciliation(ReconciliationStrategy):
             if hasattr(entity.metadata.annotations, "additional_properties"):
                 if not entity.metadata.annotations.additional_properties:
                     entity.metadata.annotations.additional_properties = {}
-                entity.metadata.annotations.additional_properties[
-                    "fingerprint"
-                ] = fingerprint
+                entity.metadata.annotations.additional_properties["fingerprint"] = (
+                    fingerprint
+                )
                 return
 
             # Method 3: Direct attribute assignment
@@ -420,15 +421,19 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                 # Check if this relation involves entities managed by this provider
                 source_managed = self._is_entity_managed_by_provider(
                     existing_rel.source,
-                    resp.parsed.primary_entities
-                    if resp.parsed.primary_entities
-                    else [],
+                    (
+                        resp.parsed.primary_entities
+                        if resp.parsed.primary_entities
+                        else []
+                    ),
                 )
                 target_managed = self._is_entity_managed_by_provider(
                     existing_rel.target,
-                    resp.parsed.primary_entities
-                    if resp.parsed.primary_entities
-                    else [],
+                    (
+                        resp.parsed.primary_entities
+                        if resp.parsed.primary_entities
+                        else []
+                    ),
                 )
 
                 # Only manage relations where at least one end is managed by this provider
@@ -436,7 +441,10 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                     source_managed or target_managed
                 ) and existing_sig not in current_relation_sigs:
                     logger.info(f"Found stale relation to delete: {existing_sig}")
-                    from devgraph_integrations.types.entities import EntityRelation, EntityReference
+                    from devgraph_integrations.types.entities import (
+                        EntityReference,
+                        EntityRelation,
+                    )
 
                     entity_relation = EntityRelation(
                         source=EntityReference(
@@ -674,8 +682,8 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                         logger.info(f"Found stale relation to delete: {existing_sig}")
                         # Convert the API relation format to EntityRelation format for deletion
                         from devgraph_integrations.types.entities import (
-                            EntityRelation,
                             EntityReference,
+                            EntityRelation,
                         )
 
                         try:

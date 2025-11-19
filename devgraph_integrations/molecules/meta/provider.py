@@ -3,15 +3,14 @@
 This provider exposes the meta entity definitions (Person, Team, Workstream)
 as entity definitions that can be discovered and used by other providers.
 """
+
 from typing import Any, Dict, List
 
-
 from devgraph_integrations.core.provider import DefinitionOnlyProvider
-
 from devgraph_integrations.types.meta import (
     V1PersonEntityDefinition,
-    V1TeamEntityDefinition,
     V1ProjectEntityDefinition,
+    V1TeamEntityDefinition,
 )
 
 

@@ -11,23 +11,23 @@ The module includes:
 - Entity types: V1LdapUserEntity, V1LdapGroupEntity, V1LdapOrgUnitEntity
 """
 
-from .provider import LdapProvider
-from .config import LdapProviderConfig, LdapSelectorConfig
 from .client import LdapClient
-from .types.v1_ldap_user import (
-    V1LdapUserEntity,
-    V1LdapUserEntitySpec,
-    V1LdapUserEntityDefinition,
-)
+from .config import LdapProviderConfig, LdapSelectorConfig
+from .provider import LdapProvider
 from .types.v1_ldap_group import (
     V1LdapGroupEntity,
-    V1LdapGroupEntitySpec,
     V1LdapGroupEntityDefinition,
+    V1LdapGroupEntitySpec,
 )
 from .types.v1_ldap_org_unit import (
     V1LdapOrgUnitEntity,
-    V1LdapOrgUnitEntitySpec,
     V1LdapOrgUnitEntityDefinition,
+    V1LdapOrgUnitEntitySpec,
+)
+from .types.v1_ldap_user import (
+    V1LdapUserEntity,
+    V1LdapUserEntityDefinition,
+    V1LdapUserEntitySpec,
 )
 
 __version__ = "1.0.0"
@@ -36,7 +36,9 @@ __molecule_metadata__ = {
     "name": "ldap",
     "display_name": "LDAP",
     "description": "Discover LDAP users, groups, and organizational units from directory services",
-    "logo": {"reactIcons": "PiUsersThree"},  # react-icons identifier (from react-icons/pi - Phosphor Icons)
+    "logo": {
+        "reactIcons": "PiUsersThree"
+    },  # react-icons identifier (from react-icons/pi - Phosphor Icons)
     "homepage_url": "https://ldap.com",
     "docs_url": "https://ldap.com/learn-about-ldap/",
     "capabilities": [

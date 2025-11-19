@@ -20,10 +20,12 @@ Example:
                 "projects": [{"id": "1", "name": "test"}]
             }
 """
-import pytest
+
 from abc import ABC, abstractmethod
-from typing import Type, Any
+from typing import Any, Type
 from unittest.mock import patch
+
+import pytest
 
 from devgraph_integrations.core.provider import Provider
 from devgraph_integrations.core.state import GraphMutations
@@ -250,6 +252,7 @@ class MoleculeTestCase(ABC):
         Returns:
             Context manager for mocking
         """
+
         # Default: no-op context manager
         class NoOpContext:
             def __enter__(self):
@@ -268,6 +271,7 @@ class MoleculeTestCase(ABC):
         Returns:
             Context manager for mocking errors
         """
+
         class NoOpContext:
             def __enter__(self):
                 return self
@@ -316,9 +320,11 @@ class HTTPMoleculeTestCase(MoleculeTestCase):
         provider = self.get_provider_instance()
 
         # Most HTTP providers have a session or client attribute
-        assert hasattr(provider, "session") or hasattr(
-            provider, "client"
-        ) or hasattr(provider, "_client")
+        assert (
+            hasattr(provider, "session")
+            or hasattr(provider, "client")
+            or hasattr(provider, "_client")
+        )
 
     def test_http_client_auth_headers(self):
         """Test that HTTP client has proper authentication headers.

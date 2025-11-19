@@ -1,8 +1,3 @@
-from .v1_ldap_user import (
-    V1LdapUserEntity,
-    V1LdapUserEntityDefinition,
-    V1LdapUserEntitySpec,
-)
 from .v1_ldap_group import (
     V1LdapGroupEntity,
     V1LdapGroupEntityDefinition,
@@ -12,6 +7,11 @@ from .v1_ldap_org_unit import (
     V1LdapOrgUnitEntity,
     V1LdapOrgUnitEntityDefinition,
     V1LdapOrgUnitEntitySpec,
+)
+from .v1_ldap_user import (
+    V1LdapUserEntity,
+    V1LdapUserEntityDefinition,
+    V1LdapUserEntitySpec,
 )
 
 __all__ = [

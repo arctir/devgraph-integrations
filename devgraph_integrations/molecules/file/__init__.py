@@ -4,8 +4,8 @@ This module implements a provider that reads entities and relations from
 .devgraph.yaml files on disk.
 """
 
-from .provider import FileProvider
 from .config import FileProviderConfig
+from .provider import FileProvider
 
 __version__ = "1.0.0"
 __molecule_metadata__ = {

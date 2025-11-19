@@ -3,6 +3,7 @@
 This module defines the entity types for representing GitLab projects
 in the Devgraph system, including specifications, definitions, and entity classes.
 """
+
 from typing import Annotated, List, Optional
 
 from pydantic import constr

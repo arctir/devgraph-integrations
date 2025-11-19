@@ -3,7 +3,9 @@
 This module provides a common HTTP API client implementation that can be
 used across multiple molecule providers to reduce code duplication.
 """
-from typing import Dict, Any, Optional
+
+from typing import Any, Dict, Optional
+
 import requests  # type: ignore
 from loguru import logger
 

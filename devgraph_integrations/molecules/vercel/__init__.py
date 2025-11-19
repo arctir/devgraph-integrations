@@ -4,8 +4,8 @@ This module provides Vercel integration for discovering deployments, projects,
 and teams on the Vercel platform.
 """
 
-from .provider import VercelProvider
 from .config import VercelProviderConfig
+from .provider import VercelProvider
 
 __version__ = "1.0.0"
 __molecule_metadata__ = {
@@ -33,4 +33,9 @@ __molecule_metadata__ = {
     "min_framework_version": "0.1.0",
 }
 
-__all__ = ["VercelProvider", "VercelProviderConfig", "__version__", "__molecule_metadata__"]
+__all__ = [
+    "VercelProvider",
+    "VercelProviderConfig",
+    "__version__",
+    "__molecule_metadata__",
+]

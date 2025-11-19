@@ -1,12 +1,12 @@
-from typing import Optional, Dict, List
+from typing import Dict, List, Optional
 
+from github import Github as GithubClient
+from github.GithubException import UnknownObjectException
 from loguru import logger
 from pydantic import BaseModel
 
 from devgraph_integrations.mcpserver.plugin import DevgraphMCPPlugin
 from devgraph_integrations.mcpserver.pluginmanager import DevgraphMCPPluginManager
-from github import Github as GithubClient
-from github.GithubException import UnknownObjectException
 
 
 class GithubAppConfig(BaseModel):

@@ -54,7 +54,9 @@ class V1FOSSAProjectEntityDefinition(EntityDefinition[V1FOSSAProjectEntitySpec])
         "security",
         "compliance",
     ]
-    description: str = "A FOSSA project containing SBOM, license, dependency, and security compliance data"
+    description: str = (
+        "A FOSSA project containing SBOM, license, dependency, and security compliance data"
+    )
 
 
 class V1FOSSAProjectEntity(Entity):

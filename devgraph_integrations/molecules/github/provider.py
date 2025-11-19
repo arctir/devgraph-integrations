@@ -5,6 +5,7 @@ and hosting services as entities in the Devgraph system. It integrates with the
 GitHub API to fetch repository information and create corresponding entities
 and relationships.
 """
+
 import datetime
 import re
 import time
@@ -16,11 +17,11 @@ from loguru import logger
 
 from devgraph_integrations.core.entity import EntityDefinitionSpec
 from devgraph_integrations.core.file_parser import parse_entity_file
-from devgraph_integrations.types.entities import EntityMetadata, Entity
 from devgraph_integrations.molecules.base.reconciliation import (
-    ReconcilingMoleculeProvider,
     FullStateReconciliation,
+    ReconcilingMoleculeProvider,
 )
+from devgraph_integrations.types.entities import Entity, EntityMetadata
 
 from .config import GithubProviderConfig
 from .types.relations import GithubRepositoryHostedByRelation
@@ -191,11 +192,19 @@ class GithubProvider(ReconcilingMoleculeProvider):
             except Exception as e:
                 error_msg = str(e)
                 # Check if it's an authentication error - don't print full traceback for these
-                if "401" in error_msg or "bad credentials" in error_msg.lower() or "unauthorized" in error_msg.lower():
-                    logger.error(f"Authentication failed for GitHub organization {selector.organization}. Please check your token configuration.")
+                if (
+                    "401" in error_msg
+                    or "bad credentials" in error_msg.lower()
+                    or "unauthorized" in error_msg.lower()
+                ):
+                    logger.error(
+                        f"Authentication failed for GitHub organization {selector.organization}. Please check your token configuration."
+                    )
                     continue
                 else:
-                    logger.exception(f"Could not access GitHub organization {selector.organization}: {e}")
+                    logger.exception(
+                        f"Could not access GitHub organization {selector.organization}: {e}"
+                    )
                     continue
             for repo in repos:
                 m = re.match(selector.repo_name, repo.name)

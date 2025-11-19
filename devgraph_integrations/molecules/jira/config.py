@@ -3,6 +3,7 @@
 This module defines the configuration classes used to configure the Jira
 provider, including authentication and selector patterns.
 """
+
 from pydantic import BaseModel, Field
 
 from devgraph_integrations.config.base import SensitiveBaseModel

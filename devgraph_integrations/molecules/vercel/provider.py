@@ -5,33 +5,34 @@ projects, and deployments as entities in the Devgraph system. It integrates
 with the Vercel API to fetch project and deployment information and creates
 corresponding entities and relationships.
 """
+
 import re
+
 from loguru import logger
 
 from devgraph_integrations.core.base import EntityDefinitionSpec
-from devgraph_integrations.types.entities import Entity
 from devgraph_integrations.molecules.base.reconciliation import (
-    ReconcilingMoleculeProvider,
     FullStateReconciliation,
+    ReconcilingMoleculeProvider,
 )
-
+from devgraph_integrations.types.entities import Entity
 
 from .client import VercelClient
 from .config import VercelProviderConfig
 from .types import (
-    V1VercelProjectEntity,
-    V1VercelProjectEntityDefinition,
-    V1VercelProjectEntitySpec,
     V1VercelDeploymentEntity,
     V1VercelDeploymentEntityDefinition,
     V1VercelDeploymentEntitySpec,
+    V1VercelProjectEntity,
+    V1VercelProjectEntityDefinition,
+    V1VercelProjectEntitySpec,
     V1VercelTeamEntity,
     V1VercelTeamEntityDefinition,
     V1VercelTeamEntitySpec,
 )
 from .types.relations import (
-    VercelProjectBelongsToTeamRelation,
     VercelDeploymentBelongsToProjectRelation,
+    VercelProjectBelongsToTeamRelation,
     VercelProjectUsesRepositoryRelation,
 )
 

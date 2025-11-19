@@ -6,30 +6,31 @@ repositories, images, and manifests as entities in the Devgraph system.
 
 import re
 from typing import List, Optional
+
 from loguru import logger
 
 from devgraph_integrations.core.base import EntityDefinition
-from devgraph_integrations.types.entities import Entity
 from devgraph_integrations.molecules.base.reconciliation import (
-    ReconcilingMoleculeProvider,
     FullStateReconciliation,
+    ReconcilingMoleculeProvider,
 )
+from devgraph_integrations.types.entities import Entity
 
 from .client import DockerRegistryClient
 from .config import DockerProviderConfig
 from .types import (
-    V1DockerRegistryEntity,
-    V1DockerRegistryEntityDefinition,
-    V1DockerRegistryEntitySpec,
-    V1DockerRepositoryEntity,
-    V1DockerRepositoryEntityDefinition,
-    V1DockerRepositoryEntitySpec,
     V1DockerImageEntity,
     V1DockerImageEntityDefinition,
     V1DockerImageEntitySpec,
     V1DockerManifestEntity,
     V1DockerManifestEntityDefinition,
     V1DockerManifestEntitySpec,
+    V1DockerRegistryEntity,
+    V1DockerRegistryEntityDefinition,
+    V1DockerRegistryEntitySpec,
+    V1DockerRepositoryEntity,
+    V1DockerRepositoryEntityDefinition,
+    V1DockerRepositoryEntitySpec,
 )
 
 
@@ -459,10 +460,10 @@ class DockerProvider(ReconcilingMoleculeProvider):
             List of relation objects
         """
         from .types.relations import (
-            DockerRepositoryBelongsToRegistryRelation,
             DockerImageBelongsToRepositoryRelation,
-            DockerManifestBelongsToRepositoryRelation,
             DockerImageUsesManifestRelation,
+            DockerManifestBelongsToRepositoryRelation,
+            DockerRepositoryBelongsToRegistryRelation,
             DockerRepositoryBuiltFromGithubRepositoryRelation,
             GithubRepositoryBuildsDockerRepositoryRelation,
         )

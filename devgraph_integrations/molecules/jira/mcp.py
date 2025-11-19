@@ -3,12 +3,13 @@
 This module provides MCP tools for interacting with Jira, including
 issue creation, searching, updating, and project management.
 """
-from typing import Optional, Dict, List, Any
 
-from loguru import logger
-from pydantic import BaseModel
+from typing import Any, Dict, List, Optional
+
 from jira import JIRA
 from jira.exceptions import JIRAError
+from loguru import logger
+from pydantic import BaseModel
 
 from devgraph_integrations.mcpserver.plugin import DevgraphMCPPlugin
 from devgraph_integrations.mcpserver.pluginmanager import DevgraphMCPPluginManager
@@ -163,15 +164,15 @@ class JiraMCPServer(DevgraphMCPPlugin):
                 "description": issue.fields.description or "",
                 "status": issue.fields.status.name,
                 "issue_type": issue.fields.issuetype.name,
-                "priority": issue.fields.priority.name
-                if issue.fields.priority
-                else None,
-                "assignee": issue.fields.assignee.displayName
-                if issue.fields.assignee
-                else None,
-                "reporter": issue.fields.reporter.displayName
-                if issue.fields.reporter
-                else None,
+                "priority": (
+                    issue.fields.priority.name if issue.fields.priority else None
+                ),
+                "assignee": (
+                    issue.fields.assignee.displayName if issue.fields.assignee else None
+                ),
+                "reporter": (
+                    issue.fields.reporter.displayName if issue.fields.reporter else None
+                ),
                 "created": issue.fields.created,
                 "updated": issue.fields.updated,
                 "labels": issue.fields.labels,
@@ -286,9 +287,11 @@ class JiraMCPServer(DevgraphMCPPlugin):
                         "summary": issue.fields.summary,
                         "status": issue.fields.status.name,
                         "issue_type": issue.fields.issuetype.name,
-                        "assignee": issue.fields.assignee.displayName
-                        if issue.fields.assignee
-                        else None,
+                        "assignee": (
+                            issue.fields.assignee.displayName
+                            if issue.fields.assignee
+                            else None
+                        ),
                         "url": f"{self.config.base_url}/browse/{issue.key}",
                     }
                 )

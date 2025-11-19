@@ -1,11 +1,13 @@
 """Tests for File-based molecule provider."""
-import pytest
+
 import tempfile
 from pathlib import Path
+
+import pytest
 from tests.framework import MoleculeTestCase
 
-from devgraph_integrations.molecules.file.provider import FileProvider
 from devgraph_integrations.molecules.file.config import FileProviderConfig
+from devgraph_integrations.molecules.file.provider import FileProvider
 
 
 class TestFileMolecule(MoleculeTestCase):
@@ -87,7 +89,8 @@ class TestFileMolecule(MoleculeTestCase):
         with tempfile.TemporaryDirectory() as tmpdir:
             # Write test entity file
             test_file = Path(tmpdir) / ".devgraph.yaml"
-            test_file.write_text("""
+            test_file.write_text(
+                """
 apiVersion: entities.devgraph.ai/v1
 kind: Service
 metadata:
@@ -95,7 +98,8 @@ metadata:
   namespace: test
 spec:
   display_name: Test Service
-""")
+"""
+            )
 
             config = FileProviderConfig(
                 namespace="test",

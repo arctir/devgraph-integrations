@@ -2,17 +2,15 @@ import json
 import threading
 import time
 from time import sleep
+
 import requests  # type: ignore
-
 import schedule
-from loguru import logger
-
 from devgraph_client.api.entities import (
+    create_entities_bulk,
     create_entity,
     create_entity_definition,
     create_entity_relation,
     create_entity_relations_bulk,
-    create_entities_bulk,
     delete_entity,
     delete_entity_relation,
     get_entities,
@@ -23,6 +21,8 @@ from devgraph_client.client import (
 from devgraph_client.models.bulk_entity_relation_create_request import (
     BulkEntityRelationCreateRequest,
 )
+from loguru import logger
+
 from devgraph_integrations.config import Config
 from devgraph_integrations.core.extension import DiscoveryExtensionManager
 from devgraph_integrations.core.provider import Provider
@@ -32,8 +32,8 @@ from devgraph_integrations.core.registry import (
 )
 from devgraph_integrations.types.entities import (
     Entity,
-    EntityRelation,
     EntityReference,
+    EntityRelation,
     FieldSelectedEntityRelation,
 )
 
@@ -293,11 +293,11 @@ def create_meta_type_relations(
     Returns:
         Tuple of (meta_entities, relations) for entities that have meta_type alignment
     """
-    from devgraph_client.models.entity_relation import (
-        EntityRelation,
-    )
     from devgraph_client.models.entity_reference import (
         EntityReference,
+    )
+    from devgraph_client.models.entity_relation import (
+        EntityRelation,
     )
 
     relations = []
@@ -340,7 +340,10 @@ def create_meta_type_relations(
                 try:
                     # Create the meta type entity using the actual meta type spec
                     if meta_type == "Team":
-                        from devgraph_integrations.types.meta import V1TeamEntity, V1TeamEntitySpec
+                        from devgraph_integrations.types.meta import (
+                            V1TeamEntity,
+                            V1TeamEntitySpec,
+                        )
 
                         meta_entity = V1TeamEntity(
                             apiVersion="entities.devgraph.ai/v1",
@@ -359,7 +362,9 @@ def create_meta_type_relations(
                             V1ProjectEntity,
                             V1ProjectEntitySpec,
                         )
-                        from devgraph_integrations.types.meta.v1_project import ProjectType
+                        from devgraph_integrations.types.meta.v1_project import (
+                            ProjectType,
+                        )
 
                         meta_entity = V1ProjectEntity(
                             apiVersion="entities.devgraph.ai/v1",
@@ -460,8 +465,10 @@ def run_provider(
 
         # For providers that implement their own reconciliation (ReconcilingMoleculeProvider),
         # skip the legacy deletion computation as they handle deletions internally
-        from devgraph_integrations.molecules.base.reconciliation import ReconcilingMoleculeProvider
         from devgraph_integrations.core.provider import DefinitionOnlyProvider
+        from devgraph_integrations.molecules.base.reconciliation import (
+            ReconcilingMoleculeProvider,
+        )
 
         if not isinstance(
             provider, (ReconcilingMoleculeProvider, DefinitionOnlyProvider)
@@ -1015,7 +1022,6 @@ class DiscoveryProcessor:
                         run_threaded,
                         run_provider(provider, self._client, self.environment),
                     )
-
 
                 logger.info(f"Successfully reloaded {len(new_providers)} providers")
             else:

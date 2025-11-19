@@ -3,6 +3,7 @@
 This module provides classes and utilities for managing provider config schema
 versions, including deprecation tracking and automatic migrations.
 """
+
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Callable, Optional

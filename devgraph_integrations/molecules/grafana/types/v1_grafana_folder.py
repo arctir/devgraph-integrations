@@ -1,8 +1,7 @@
 """Grafana Folder entity type definition."""
 
 from devgraph_integrations.core.entity import EntityDefinitionSpec
-from devgraph_integrations.types.entities import EntityMetadata, Entity
-
+from devgraph_integrations.types.entities import Entity, EntityMetadata
 
 V1GrafanaFolderEntityDefinition = EntityDefinitionSpec(
     group="observability.devgraph.ai",

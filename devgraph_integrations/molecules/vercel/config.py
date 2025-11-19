@@ -3,6 +3,7 @@
 This module defines the configuration classes used to configure the Vercel
 provider, including selector patterns for teams and projects.
 """
+
 from pydantic import Field
 
 from ..base.config import HttpApiProviderWithSelectorsConfig, SelectorConfig

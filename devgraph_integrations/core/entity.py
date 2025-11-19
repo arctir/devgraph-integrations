@@ -1,8 +1,14 @@
 import re
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field, PrivateAttr, field_validator, model_validator
-from pydantic import ConfigDict
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    PrivateAttr,
+    field_validator,
+    model_validator,
+)
 
 
 class EntityMetadata(BaseModel):

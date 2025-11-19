@@ -1,8 +1,8 @@
 """FOSSA MCP Server for SBOM and license data retrieval."""
 
-from typing import Optional, Dict, Literal
-import requests  # type: ignore
+from typing import Dict, Literal, Optional
 
+import requests  # type: ignore
 from loguru import logger
 from pydantic import BaseModel
 

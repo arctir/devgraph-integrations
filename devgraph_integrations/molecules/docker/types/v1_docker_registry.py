@@ -4,6 +4,7 @@ This module defines the entity type for Docker registry instances.
 """
 
 from typing import Optional
+
 from pydantic import Field
 
 from devgraph_integrations.core.base import EntityDefinition

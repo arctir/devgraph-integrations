@@ -20,7 +20,9 @@ class V1GithubHostingServiceEntityDefinition(
     singular: str = "githubhostingservice"
     name: str = "v1"
     spec_class: type = V1GithubHostingServiceEntitySpec
-    description: str = "A GitHub hosting service that provides Git repository hosting and collaboration features"
+    description: str = (
+        "A GitHub hosting service that provides Git repository hosting and collaboration features"
+    )
 
 
 class V1GithubHostingServiceEntity(Entity):

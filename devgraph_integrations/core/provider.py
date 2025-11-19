@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Optional, TYPE_CHECKING
-
-from loguru import logger
+from typing import TYPE_CHECKING, Optional
 
 from devgraph_client.client import (
     AuthenticatedClient,
 )
+from loguru import logger
+
 from devgraph_integrations.core.entity import EntityDefinitionSpec
 
 from .state import GraphMutations

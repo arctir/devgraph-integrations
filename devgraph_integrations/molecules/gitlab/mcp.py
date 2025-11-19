@@ -1,14 +1,16 @@
 from typing import Optional
 
+from gitlab import Gitlab as GitlabClient
+from gitlab.exceptions import GitlabGetError
 from loguru import logger
 from pydantic import BaseModel
 
 from devgraph_integrations.mcpserver.plugin import DevgraphMCPPlugin
 from devgraph_integrations.mcpserver.pluginmanager import DevgraphMCPPluginManager
-from devgraph_integrations.molecules.gitlab.types.v1_gitlab_project import V1GitlabProjectEntity
+from devgraph_integrations.molecules.gitlab.types.v1_gitlab_project import (
+    V1GitlabProjectEntity,
+)
 from devgraph_integrations.types.auth import AuthContext
-from gitlab import Gitlab as GitlabClient
-from gitlab.exceptions import GitlabGetError
 
 
 class GitlabConfig(BaseModel):

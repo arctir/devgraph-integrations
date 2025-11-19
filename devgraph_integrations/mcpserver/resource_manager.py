@@ -1,7 +1,9 @@
 from typing import Any, Callable
 
 from mcp.server.fastmcp.resources.base import Resource  # type: ignore
-from mcp.server.fastmcp.resources.resource_manager import ResourceManager  # type: ignore
+from mcp.server.fastmcp.resources.resource_manager import (
+    ResourceManager,  # type: ignore
+)
 from pydantic import AnyUrl
 
 

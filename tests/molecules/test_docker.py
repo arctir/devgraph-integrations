@@ -1,12 +1,13 @@
 """Tests for Docker Registry molecule provider."""
+
 import pytest
 from tests.framework import HTTPMoleculeTestCase
 
-from devgraph_integrations.molecules.docker.provider import DockerProvider
 from devgraph_integrations.molecules.docker.config import (
     DockerProviderConfig,
     DockerSelectorConfig,
 )
+from devgraph_integrations.molecules.docker.provider import DockerProvider
 
 
 class TestDockerMolecule(HTTPMoleculeTestCase):
@@ -33,15 +34,15 @@ class TestDockerMolecule(HTTPMoleculeTestCase):
 
     def get_mock_api_data(self) -> dict:
         """Return mock Docker registry API response data."""
-        return {
-            "repositories": ["test-org/app1", "test-org/app2"]
-        }
+        return {"repositories": ["test-org/app1", "test-org/app2"]}
 
     def get_api_base_url(self) -> str:
         """Return Docker registry API base URL."""
         return "https://ghcr.io/"
 
-    @pytest.mark.skip(reason="DockerProviderConfig may have defaults for required fields")
+    @pytest.mark.skip(
+        reason="DockerProviderConfig may have defaults for required fields"
+    )
     def test_config_requires_registry_type(self):
         """Test that config requires registry_type."""
         pass

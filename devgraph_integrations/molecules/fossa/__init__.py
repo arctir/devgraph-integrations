@@ -35,6 +35,7 @@ __all__ = ["FOSSAProvider", "__version__", "__molecule_metadata__"]
 # MCP server is optional - only import if dependencies are available
 try:
     from .mcp import FOSSAMCPServer  # noqa: F401
+
     __all__.append("FOSSAMCPServer")
 except ImportError:
     pass

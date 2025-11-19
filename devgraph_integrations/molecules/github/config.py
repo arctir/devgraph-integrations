@@ -3,7 +3,9 @@
 This module defines the configuration classes used to configure the GitHub
 provider, including selector patterns for organizations and repositories.
 """
+
 from typing import Annotated, Literal, Union
+
 from pydantic import BaseModel, Field
 
 from devgraph_integrations.config.base import SensitiveBaseModel

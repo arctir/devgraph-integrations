@@ -29,7 +29,9 @@ class V1VercelDeploymentEntityDefinition(
     singular: str = "verceldeployment"
     name: str = "v1"
     spec_class: type = V1VercelDeploymentEntitySpec
-    description: str = "A Vercel deployment representing a specific version of a web application or site"
+    description: str = (
+        "A Vercel deployment representing a specific version of a web application or site"
+    )
 
 
 class V1VercelDeploymentEntity(Entity):

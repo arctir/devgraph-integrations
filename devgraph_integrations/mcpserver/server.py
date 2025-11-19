@@ -216,6 +216,7 @@ class DevgraphMCPSever:
     def get_app(self):
         # Configure all logging before creating the app to catch rich logging
         import logging
+
         from loguru import logger as loguru_logger
 
         # Intercept handler for stdlib logging
@@ -240,7 +241,15 @@ class DevgraphMCPSever:
         logging.root.setLevel(logging.INFO)
 
         # Pre-configure uvicorn and other loggers before they're created
-        for logger_name in ["uvicorn", "uvicorn.access", "uvicorn.error", "uvicorn.asgi", "fastmcp", "mcp", "rich"]:
+        for logger_name in [
+            "uvicorn",
+            "uvicorn.access",
+            "uvicorn.error",
+            "uvicorn.asgi",
+            "fastmcp",
+            "mcp",
+            "rich",
+        ]:
             log = logging.getLogger(logger_name)
             log.handlers = [InterceptHandler()]
             log.setLevel(logging.INFO)

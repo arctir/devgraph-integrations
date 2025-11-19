@@ -3,6 +3,7 @@
 This module defines the configuration classes used to configure the LDAP
 provider, including connection settings and object selection criteria.
 """
+
 from pydantic import BaseModel
 
 from devgraph_integrations.config.base import SensitiveBaseModel

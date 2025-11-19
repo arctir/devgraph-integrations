@@ -1,4 +1,3 @@
-
 from loguru import logger
 from stevedore import ExtensionManager  # type: ignore
 

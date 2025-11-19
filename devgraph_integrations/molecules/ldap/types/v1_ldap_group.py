@@ -29,7 +29,9 @@ class V1LdapGroupEntityDefinition(EntityDefinition[V1LdapGroupEntitySpec]):
     singular: str = "ldapgroup"
     name: str = "v1"
     spec_class: type = V1LdapGroupEntitySpec
-    description: str = "An LDAP group representing a collection of users from an LDAP directory service"
+    description: str = (
+        "An LDAP group representing a collection of users from an LDAP directory service"
+    )
 
 
 class V1LdapGroupEntity(Entity):

@@ -5,26 +5,26 @@ projects, and applications as entities in the Devgraph system. It integrates
 with the Argo CD API to fetch application and project information and creates
 corresponding entities and relationships.
 """
-from loguru import logger
 
 from devgraph_client.client import AuthenticatedClient
+from loguru import logger
+
 from devgraph_integrations.core.entity import EntityDefinitionSpec
 from devgraph_integrations.core.state import GraphMutations
 
 from ..base.provider import HttpApiMoleculeProvider
-
 from .client import ArgoClient
 from .config import ArgoProviderConfig
 from .types import (
-    V1ArgoApplicationEntityDefinition,
-    V1ArgoInstanceEntityDefinition,
-    V1ArgoProjectEntityDefinition,
-    V1ArgoProjectEntitySpec,
     V1ArgoApplicationEntity,
-    V1ArgoInstanceEntity,
+    V1ArgoApplicationEntityDefinition,
     V1ArgoApplicationEntitySpec,
+    V1ArgoInstanceEntity,
+    V1ArgoInstanceEntityDefinition,
     V1ArgoInstanceEntitySpec,
     V1ArgoProjectEntity,
+    V1ArgoProjectEntityDefinition,
+    V1ArgoProjectEntitySpec,
 )
 from .types.relations import (
     ApplicationBelongsToProjectRelation,

@@ -3,11 +3,13 @@
 This module provides base classes that implement common patterns across
 molecule providers to reduce code duplication and ensure consistency.
 """
+
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Type
-from loguru import logger
 
 from devgraph_client.client import AuthenticatedClient
+from loguru import logger
+
 from devgraph_integrations.core.provider import Provider
 from devgraph_integrations.core.state import GraphMutations
 from devgraph_integrations.types.entities import Entity, EntityMetadata
@@ -69,9 +71,9 @@ class MoleculeProvider(Provider, ABC):
         metadata = {
             "type": cls.__name__.replace("Provider", "").lower(),
             "display_name": cls._display_name or cls.__name__.replace("Provider", ""),
-            "description": cls._description or cls.__doc__.split("\n")[0]
-            if cls.__doc__
-            else "",
+            "description": (
+                cls._description or cls.__doc__.split("\n")[0] if cls.__doc__ else ""
+            ),
             "config_schema": cls.get_config_schema(),
         }
 

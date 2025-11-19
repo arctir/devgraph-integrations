@@ -1,14 +1,16 @@
 """Tests for GitLab molecule provider."""
-import pytest
-from unittest.mock import Mock
-from tests.framework import HTTPMoleculeTestCase
-from gitlab.exceptions import GitlabGetError
 
-from devgraph_integrations.molecules.gitlab.provider import GitlabProvider
+from unittest.mock import Mock
+
+import pytest
+from gitlab.exceptions import GitlabGetError
+from tests.framework import HTTPMoleculeTestCase
+
 from devgraph_integrations.molecules.gitlab.config import (
     GitlabProviderConfig,
     GitlabSelectorConfig,
 )
+from devgraph_integrations.molecules.gitlab.provider import GitlabProvider
 
 
 class TestGitLabMolecule(HTTPMoleculeTestCase):
@@ -88,8 +90,12 @@ class TestGitLabMolecule(HTTPMoleculeTestCase):
         kinds = [d.kind for d in definitions]
         # Check case-insensitively for project and hosting service
         kinds_lower = [k.lower() for k in kinds]
-        assert any("project" in k and "git" in k for k in kinds_lower), f"No GitLab project kind found in {kinds}"
-        assert any("hosting" in k for k in kinds_lower), f"No hosting service kind found in {kinds}"
+        assert any(
+            "project" in k and "git" in k for k in kinds_lower
+        ), f"No GitLab project kind found in {kinds}"
+        assert any(
+            "hosting" in k for k in kinds_lower
+        ), f"No hosting service kind found in {kinds}"
 
     def test_multiple_group_selectors(self):
         """Test configuration with multiple group selectors."""

@@ -8,8 +8,8 @@ The Project type provides common fields for tracking project metadata,
 lifecycle, stakeholders, and relationships to other entities.
 """
 
-from typing import Optional
 from enum import Enum
+from typing import Optional
 
 from devgraph_integrations.core.base import EntityDefinition
 from devgraph_integrations.types.entities import Entity, EntitySpec

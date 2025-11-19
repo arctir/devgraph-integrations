@@ -3,6 +3,7 @@
 This module defines the configuration classes used to configure the GitLab
 provider, including selector patterns for groups and projects.
 """
+
 from pydantic import BaseModel
 
 from devgraph_integrations.config.base import SensitiveBaseModel

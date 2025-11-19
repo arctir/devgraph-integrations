@@ -4,7 +4,7 @@ This module provides a client for interacting with the Vercel API to fetch
 teams, projects, deployments, and other resources.
 """
 
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 from ..base.client import RestApiClient
 

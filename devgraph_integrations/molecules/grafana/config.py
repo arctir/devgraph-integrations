@@ -3,6 +3,7 @@
 This module defines the configuration classes used to configure the Grafana
 provider for discovering dashboards, datasources, and other resources.
 """
+
 from pydantic import BaseModel, Field
 
 from devgraph_integrations.config.base import SensitiveBaseModel

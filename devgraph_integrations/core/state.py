@@ -2,7 +2,11 @@ from typing import List, Union
 
 from pydantic import BaseModel
 
-from devgraph_integrations.types.entities import Entity, EntityRelation, FieldSelectedEntityRelation
+from devgraph_integrations.types.entities import (
+    Entity,
+    EntityRelation,
+    FieldSelectedEntityRelation,
+)
 
 
 class GraphMutations(BaseModel):

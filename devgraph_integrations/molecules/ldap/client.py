@@ -4,8 +4,10 @@ This module provides a client for connecting to and querying LDAP directories,
 including support for pagination, different authentication methods, and
 various search scopes.
 """
-from typing import List, Dict, Any, Optional
-from ldap3 import Server, Connection, ALL, SUBTREE, BASE, LEVEL
+
+from typing import Any, Dict, List, Optional
+
+from ldap3 import ALL, BASE, LEVEL, SUBTREE, Connection, Server
 from loguru import logger
 
 from .config import LdapSelectorConfig

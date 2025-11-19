@@ -4,15 +4,16 @@ This module provides functionality to register, manage, and create entity defini
 independently of provider instances. This allows for schema setup, validation,
 and documentation without running specific providers.
 """
+
 import importlib
 import inspect
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from loguru import logger
-
 from devgraph_client.api.entities import create_entity_definition
 from devgraph_client.client import AuthenticatedClient
+from loguru import logger
+
 from devgraph_integrations.core.base import EntityDefinition
 
 

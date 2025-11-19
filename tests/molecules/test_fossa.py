@@ -1,11 +1,13 @@
 """Tests for FOSSA molecule provider."""
-import pytest
-from unittest.mock import Mock, patch
-from tests.framework import HTTPMoleculeTestCase
-from tests.conftest import MockAPIResponse
 
-from devgraph_integrations.molecules.fossa.provider import FOSSAProvider
+from unittest.mock import Mock, patch
+
+import pytest
+from tests.conftest import MockAPIResponse
+from tests.framework import HTTPMoleculeTestCase
+
 from devgraph_integrations.molecules.fossa.config import FOSSAProviderConfig
+from devgraph_integrations.molecules.fossa.provider import FOSSAProvider
 
 
 class TestFOSSAMolecule(HTTPMoleculeTestCase):
@@ -136,7 +138,9 @@ class TestFOSSAMolecule(HTTPMoleculeTestCase):
         # Test None handling
         assert provider._normalize_url(None) is None
 
-    def test_create_relations_links_to_repos(self, mock_devgraph_client, mock_entity_response):
+    def test_create_relations_links_to_repos(
+        self, mock_devgraph_client, mock_entity_response
+    ):
         """Test that FOSSA projects are linked to GitHub/GitLab repos."""
         provider = self.get_provider_instance()
 
@@ -151,9 +155,7 @@ class TestFOSSAMolecule(HTTPMoleculeTestCase):
         github_repo.spec.additional_properties = {"url": "https://github.com/test/repo"}
 
         # Mock the get_entities call (imported inside the method)
-        with patch(
-            "devgraph_client.api.entities.get_entities"
-        ) as mock_get_entities:
+        with patch("devgraph_client.api.entities.get_entities") as mock_get_entities:
             mock_get_entities.sync_detailed.return_value = mock_entity_response(
                 entities=[github_repo]
             )
@@ -334,9 +336,7 @@ class TestFOSSAMolecule(HTTPMoleculeTestCase):
         provider = self.get_provider_instance()
 
         mock_data = {
-            "projects": [
-                {"id": f"proj-{i}", "title": f"Project {i}"} for i in range(5)
-            ]
+            "projects": [{"id": f"proj-{i}", "title": f"Project {i}"} for i in range(5)]
         }
 
         with patch.object(provider, "_make_request", return_value=mock_data):

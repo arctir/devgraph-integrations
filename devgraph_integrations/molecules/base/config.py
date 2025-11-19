@@ -3,7 +3,9 @@
 This module provides common configuration patterns used across multiple
 molecule providers to reduce duplication and ensure consistency.
 """
+
 from typing import List
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from devgraph_integrations.config.base import SensitiveBaseModel

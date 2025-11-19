@@ -36,6 +36,7 @@ __all__ = ["GitlabProvider", "__version__", "__molecule_metadata__"]
 # MCP server is optional - only import if dependencies are available
 try:
     from .mcp import GitlabMCPServer  # noqa: F401
+
     __all__.append("GitlabMCPServer")
 except ImportError:
     pass

@@ -5,9 +5,11 @@ registry provider, including selector patterns for registries and repositories.
 """
 
 from typing import Optional
+
 from pydantic import Field
 
 from devgraph_integrations.config.base import SensitiveBaseModel
+
 from ..base.config import HttpApiProviderWithSelectorsConfig, SelectorConfig
 
 

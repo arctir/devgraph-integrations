@@ -1,9 +1,11 @@
 """Pytest configuration and shared fixtures for molecule tests."""
-import pytest
+
 from unittest.mock import Mock
 from uuid import uuid4
 
+import pytest
 from devgraph_client.client import AuthenticatedClient
+
 from devgraph_integrations.types.entities import EntityMetadata
 
 
@@ -81,6 +83,7 @@ class MockAPIResponse:
         """Raise HTTPError for bad status codes."""
         if not self.ok:
             from requests import HTTPError
+
             raise HTTPError(f"HTTP {self.status_code}")
 
 
@@ -99,6 +102,7 @@ def mock_requests_session(monkeypatch):
         Mock Session object
     """
     import requests
+
     session_mock = Mock(spec=requests.Session)
 
     def mock_session_init(*args, **kwargs):
@@ -115,6 +119,7 @@ def mock_entity_response():
     Returns:
         Function that creates mock responses with entities
     """
+
     def _create_response(entities: list = None, status_code: int = 200):
         response = Mock()
         response.status_code = status_code

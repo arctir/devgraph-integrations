@@ -4,17 +4,18 @@ This module provides reusable functions for parsing entity definitions from file
 supporting YAML and JSON formats. It can be used by any provider that reads files from
 different transports (GitHub API, HTTP, file system, etc.).
 """
-import json
-import yaml  # type: ignore
-from typing import List, Dict, Any, Optional, Tuple
 
+import json
+from typing import Any, Dict, List, Optional, Tuple
+
+import yaml  # type: ignore
 from loguru import logger
 
 from devgraph_integrations.types.entities import (
     Entity,
     EntityMetadata,
-    EntityRelation,
     EntityReference,
+    EntityRelation,
 )
 
 

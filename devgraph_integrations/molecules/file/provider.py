@@ -5,18 +5,19 @@ relations from .devgraph.yaml files on disk.
 """
 
 import os
-from pathlib import Path
 from glob import glob
+from pathlib import Path
 from typing import List
+
 from loguru import logger
 
 from devgraph_integrations.core.base import EntityDefinition
-from devgraph_integrations.types.entities import Entity, EntityRelation
-from devgraph_integrations.molecules.base.reconciliation import (
-    ReconcilingMoleculeProvider,
-    FullStateReconciliation,
-)
 from devgraph_integrations.core.file_parser import parse_entity_file
+from devgraph_integrations.molecules.base.reconciliation import (
+    FullStateReconciliation,
+    ReconcilingMoleculeProvider,
+)
+from devgraph_integrations.types.entities import Entity, EntityRelation
 
 from .config import FileProviderConfig
 

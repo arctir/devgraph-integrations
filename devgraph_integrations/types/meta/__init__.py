@@ -16,7 +16,6 @@ from .v1_people import (
     V1TeamEntityDefinition,
     V1TeamEntitySpec,
 )
-
 from .v1_project import (
     V1ProjectEntity,
     V1ProjectEntityDefinition,

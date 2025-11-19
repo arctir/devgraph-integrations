@@ -5,26 +5,27 @@ as entities in the Devgraph system. It integrates with the FOSSA API to fetch
 project information and creates corresponding entities and relationships with
 GitHub/GitLab repositories.
 """
-import requests  # type: ignore
+
 from urllib.parse import urlparse
 
+import requests  # type: ignore
 from loguru import logger
 
 from devgraph_integrations.core.entity import EntityDefinitionSpec
-from devgraph_integrations.types.entities import EntityMetadata, Entity, EntityReference
 from devgraph_integrations.molecules.base.reconciliation import (
-    ReconcilingMoleculeProvider,
     FullStateReconciliation,
+    ReconcilingMoleculeProvider,
 )
 from devgraph_integrations.molecules.base.utils import sanitize_entity_name
+from devgraph_integrations.types.entities import Entity, EntityMetadata, EntityReference
 
 from .config import FOSSAProviderConfig
+from .types.relations import FOSSAProjectScansRelation
 from .types.v1_fossa_project import (
     V1FOSSAProjectEntity,
     V1FOSSAProjectEntityDefinition,
     V1FOSSAProjectEntitySpec,
 )
-from .types.relations import FOSSAProjectScansRelation
 
 
 class FOSSAProvider(ReconcilingMoleculeProvider):
@@ -287,7 +288,9 @@ class FOSSAProvider(ReconcilingMoleculeProvider):
                         github_repos = gh_response.parsed.primary_entities or []
                         logger.info(f"Found {len(github_repos)} GitHub repositories")
                     else:
-                        logger.warning(f"GitHub query returned no primary_entities: parsed={gh_response.parsed}")
+                        logger.warning(
+                            f"GitHub query returned no primary_entities: parsed={gh_response.parsed}"
+                        )
                 except Exception as e:
                     logger.warning(f"Failed to fetch GitHub repositories: {e}")
 

@@ -1,8 +1,7 @@
 """Grafana Dashboard entity type definition."""
 
 from devgraph_integrations.core.entity import EntityDefinitionSpec
-from devgraph_integrations.types.entities import EntityMetadata, Entity
-
+from devgraph_integrations.types.entities import Entity, EntityMetadata
 
 V1GrafanaDashboardEntityDefinition = EntityDefinitionSpec(
     group="observability.devgraph.ai",

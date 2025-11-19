@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Type
 
 from pydantic import BaseModel
+
 from devgraph_integrations.mcpserver.server import DevgraphFastMCP
 
 

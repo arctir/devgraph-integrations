@@ -32,7 +32,9 @@ class V1LdapOrgUnitEntityDefinition(EntityDefinition[V1LdapOrgUnitEntitySpec]):
     singular: str = "ldaporgunit"
     name: str = "v1"
     spec_class: type = V1LdapOrgUnitEntitySpec
-    description: str = "An LDAP organizational unit representing a structural division within an LDAP directory"
+    description: str = (
+        "An LDAP organizational unit representing a structural division within an LDAP directory"
+    )
 
 
 class V1LdapOrgUnitEntity(Entity):
