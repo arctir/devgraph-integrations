@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.6] - 2025-11-20
+
+### 🐛 Bug Fixes
+
+- fix(mcp): update the extension loading logic
+
+
 ## [0.6.5] - 2025-11-20
 
 ### 🐛 Bug Fixes
