@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.4] - 2025-11-20
+
+### 🐛 Bug Fixes
+
+- fix: suppress debug logging in release-manifest
+
+
 ## [0.6.3] - 2025-11-19
 
 ### 🐛 Bug Fixes
