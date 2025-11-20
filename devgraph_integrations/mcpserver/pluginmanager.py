@@ -9,7 +9,7 @@ class DevgraphMCPPluginManager:
     _resources = {}
     _prompts = {}
 
-    def __init__(self, namespace="devgraph.mcpserver.plugins"):
+    def __init__(self, namespace="devgraph.molecules"):
         self.namespace = namespace
         self._plugin_classes = {}
         self._plugin_class_paths = {}
@@ -56,13 +56,18 @@ class DevgraphMCPPluginManager:
         def on_load_failure(manager, entrypoint, exception):
             logger.error(f"Failed to load plugin {entrypoint}: {exception}")
 
+        logger.debug(f"Loading plugins from namespace: {self.namespace}")
+
         mgr = ExtensionManager(
             namespace=self.namespace,
             invoke_on_load=False,
             on_load_failure_callback=on_load_failure,
         )
 
+        logger.debug(f"Found {len(list(mgr))} plugins in namespace {self.namespace}")
+
         for ext in mgr:
+            logger.debug(f"Loading plugin: {ext.name} -> {ext.plugin}")
             module = ext.plugin
             self._plugin_classes[ext.name] = module
             self._plugin_class_paths[ext.name] = self._fullname(module)

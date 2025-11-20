@@ -189,8 +189,19 @@ class DevgraphMCPSever:
                 f"Loading molecule: {plugin.name} {plugin.type} (enabled: {plugin.enabled})"
             )
             if plugin.enabled:
-                cls = self.plugin_manager.plugin_class(plugin.type)
-                if cls:
+                molecule_cls = self.plugin_manager.plugin_class(plugin.type)
+                if molecule_cls:
+                    # Get the MCP server class from the molecule
+                    if hasattr(molecule_cls, "get_mcp_server"):
+                        cls = molecule_cls.get_mcp_server()
+                        if cls is None:
+                            logger.error(f"Molecule {plugin.type} has no MCP server")
+                            raise ValueError(
+                                f"Molecule {plugin.type} has no MCP server"
+                            )
+                    else:
+                        cls = molecule_cls
+
                     if plugin.config:
                         instance = cls.from_config(app, plugin.config)
                     else:
