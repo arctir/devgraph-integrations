@@ -8,12 +8,16 @@ or set: export PYTHONWARNINGS="ignore::DeprecationWarning"
 import argparse
 import asyncio
 import sys
+import warnings
 
 from loguru import logger
 
 from devgraph_integrations.config import Config
 from devgraph_integrations.core.discovery import DiscoveryProcessor
 from devgraph_integrations.core.metadata import list_all_molecules
+
+# Suppress DeprecationWarnings from third-party libraries (e.g., pyasn1)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 async def run_discover(args):
@@ -346,15 +350,16 @@ def parse_arguments():
 
 def main():
     """Main entry point."""
-    # Suppress DEBUG logs during argument parsing (config source manager loads plugins)
+    # Configure logging to stderr with INFO level by default
+    # This prevents DEBUG logs from corrupting stdout (e.g., for release-manifest JSON)
     logger.remove()
-    logger.add(sys.stdout, level="INFO")
+    logger.add(sys.stderr, level="INFO")
 
     args = parse_arguments()
 
     # Reconfigure logging with user-specified level
     logger.remove()
-    logger.add(sys.stdout, level=args.log_level.upper())
+    logger.add(sys.stderr, level=args.log_level.upper())
 
     if not args.command:
         logger.error("No command specified. Use 'discover' or 'mcp'")

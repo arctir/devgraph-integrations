@@ -18,14 +18,12 @@ class DevgraphMCPPluginManager:
 
     @classmethod
     def mcp_tool(cls, fn):
-        logger.debug(f"Registering tool:{cls._fullname(fn)}")
         cls._tools[cls._fullname(fn)] = fn
         return fn
 
     @classmethod
     def mcp_resource(cls, uri: str):
         def decorator(fn):
-            logger.debug(f"Registering resource: {cls._fullname(fn)}")
             cls._resources[cls._fullname(fn)] = fn
             return fn
 
