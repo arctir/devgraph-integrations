@@ -346,9 +346,13 @@ def parse_arguments():
 
 def main():
     """Main entry point."""
+    # Suppress DEBUG logs during argument parsing (config source manager loads plugins)
+    logger.remove()
+    logger.add(sys.stdout, level="INFO")
+
     args = parse_arguments()
 
-    # Configure logging
+    # Reconfigure logging with user-specified level
     logger.remove()
     logger.add(sys.stdout, level=args.log_level.upper())
 
