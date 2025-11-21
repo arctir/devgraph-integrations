@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.6.7] - 2025-11-21
+
+### 🔧 Other Changes
+
+- chore: bump the devgraph-client
+
 ## [0.6.6] - 2025-11-20
 
 ### 🐛 Bug Fixes
