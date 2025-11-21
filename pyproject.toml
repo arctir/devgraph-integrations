@@ -32,7 +32,7 @@ jira = "^3.8.0"
 # MCP server support (optional)
 fastmcp = { version = "^2.10.1", optional = true }
 mcp = { version = "^1.10.1", optional = true }
-devgraph-client = "1.0.0b17"
+devgraph-client = "1.0.0b24"
 inflect = "^7.5.0"
 
 [tool.poetry.group.dev.dependencies]
