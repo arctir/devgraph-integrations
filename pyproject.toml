@@ -1,64 +1,53 @@
-[tool.poetry]
+[project]
 name = "devgraph-integrations"
 version = "0.6.7"
 description = "Integration providers for discovering and syncing entities with Devgraph"
-authors = ["Craig Tracey <craig@arctir.com>"]
+authors = [{ name = "Craig Tracey", email = "craig@arctir.com" }]
+requires-python = ">=3.10,<4"
 readme = "README.md"
-packages = [{ include = "devgraph_integrations" }]
-license = "Apache-2.0"
-homepage = "https://github.com/arctir/devgraph-integrations"
-repository = "https://github.com/arctir/devgraph-integrations"
+license = { text = "Apache-2.0" }
 keywords = ["devgraph", "discovery", "entity", "graph", "synchronization"]
+dependencies = [
+    "pydantic>=2.10.6,<3",
+    "schedule>=1.2.2,<2",
+    "pluggy>=1.5.0,<2",
+    "pyyaml>=6.0.2,<7",
+    "stevedore>=5.4.1,<6",
+    "loguru>=0.7.3,<0.8",
+    "requests>=2.32.4,<3",
+    "httpx>=0.28.1,<0.29",
+    "attrs>=25.3.0,<26",
+    "pyjwt>=2.8.0,<3",
+    "cryptography>=42.0.0,<46",
+    "python-dateutil>=2.9.0,<3",
+    # Provider-specific dependencies
+    "pygithub>=2.5.0,<3",
+    "python-gitlab>=6.4.0,<7",
+    "ldap3>=2.9.1,<3",
+    "jira>=3.8.0,<4",
+    "devgraph-client==1.0.0b24",
+    "inflect>=7.5.0,<8",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-pydantic = "^2.10.6"
-schedule = "^1.2.2"
-pluggy = "^1.5.0"
-pyyaml = "^6.0.2"
-stevedore = "^5.4.1"
-loguru = "^0.7.3"
-requests = "^2.32.4"
-httpx = "^0.28.1"
-attrs = "^25.3.0"
-python-dateutil = "^2.9.0.post0"
+[project.optional-dependencies]
+mcp = [
+    "fastmcp>=2.10.1,<3",
+    "mcp>=1.10.1,<2",
+]
+all = [
+    "fastmcp>=2.10.1,<3",
+    "mcp>=1.10.1,<2",
+]
 
-# Provider-specific dependencies
-pygithub = "^2.5.0"
-python-gitlab = "^6.4.0"
-ldap3 = "^2.9.1"
-jira = "^3.8.0"
+[project.urls]
+Homepage = "https://github.com/arctir/devgraph-integrations"
+Repository = "https://github.com/arctir/devgraph-integrations"
 
-# MCP server support (optional)
-fastmcp = { version = "^2.10.1", optional = true }
-mcp = { version = "^1.10.1", optional = true }
-devgraph-client = "1.0.0b24"
-inflect = "^7.5.0"
-
-[tool.poetry.group.dev.dependencies]
-black = "^24.10.0"
-pytest = "^8.0.0"
-pytest-asyncio = "^1.1.0"
-mypy = "^1.18.1"
-isort = "^6.0.1"
-flake8 = "^7.2.0"
-pytest-cov = "^7.0.0"
-ruff = "^0.14.4"
-pre-commit = "^4.0.1"
-
-[tool.poetry.extras]
-mcp = ["fastmcp", "mcp"]
-all = ["fastmcp", "mcp"]
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
+[project.scripts]
 devgraph-integrations = "devgraph_integrations.cli:main"
 
 # Single namespace for all molecules - each molecule provides its capabilities
-[tool.poetry.plugins."devgraph.molecules"]
+[project.entry-points."devgraph.molecules"]
 "github.molecules.devgraph.ai" = "devgraph_integrations.molecules.github.molecule:GithubMolecule"
 "gitlab.molecules.devgraph.ai" = "devgraph_integrations.molecules.gitlab.molecule:GitlabMolecule"
 "argo.molecules.devgraph.ai" = "devgraph_integrations.molecules.argo.molecule:ArgoMolecule"
@@ -70,8 +59,31 @@ devgraph-integrations = "devgraph_integrations.cli:main"
 "grafana.molecules.devgraph.ai" = "devgraph_integrations.molecules.grafana.molecule:GrafanaMolecule"
 "meta.molecules.devgraph.ai" = "devgraph_integrations.molecules.meta.molecule:MetaMolecule"
 
-[tool.poetry.plugins."devgraph_integrations.config.sources"]
+[project.entry-points."devgraph_integrations.config.sources"]
 "file" = "devgraph_integrations.config.sources.file:FileConfigSource"
+
+[dependency-groups]
+dev = [
+    "black>=24.10.0,<25",
+    "pytest>=8.0.0,<9",
+    "pytest-asyncio>=1.1.0,<2",
+    "mypy>=1.18.1,<2",
+    "isort>=6.0.1,<7",
+    "flake8>=7.2.0,<8",
+    "pytest-cov>=7.0.0,<8",
+    "ruff>=0.14.4,<0.15",
+    "pre-commit>=4.0.1,<5",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["devgraph_integrations"]
+
+[tool.hatch.build.targets.wheel]
+include = ["devgraph_integrations"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.mypy]
 python_version = "3.10"
