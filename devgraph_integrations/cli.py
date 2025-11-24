@@ -129,7 +129,7 @@ def run_release_manifest(args):
     """Generate a release manifest JSON for GitHub releases."""
     import json
     from datetime import datetime, timezone
-    from importlib.metadata import packages_distributions, version
+    from importlib.metadata import version
 
     # Auto-detect package name: try -internal first, fallback to base
     package_name = "devgraph-integrations"
