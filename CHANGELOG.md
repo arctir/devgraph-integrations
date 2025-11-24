@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.1] - 2025-11-24
+
+### 🐛 Bug Fixes
+
+- fix: address uv usage in github actions
+
+
 ## [0.7.0] - 2025-11-24
 
 ### ✨ Features
