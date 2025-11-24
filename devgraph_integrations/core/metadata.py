@@ -115,7 +115,8 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
             try:
                 meta_dict = plugin_class.get_full_metadata()
                 metadata = MoleculeMetadata(**meta_dict)
-                result[metadata.name] = metadata
+                # Use entry point name (FQDN) as the key
+                result[ext.name] = metadata
                 continue
             except Exception:
                 pass
@@ -125,7 +126,8 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
             try:
                 meta_dict = plugin_class.get_metadata()
                 metadata = MoleculeMetadata(**meta_dict)
-                result[metadata.name] = metadata
+                # Use entry point name (FQDN) as the key
+                result[ext.name] = metadata
                 continue
             except Exception:
                 pass
@@ -134,7 +136,8 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
         module_path = plugin_class.__module__.rsplit(".", 1)[0]
         metadata = get_molecule_metadata(module_path)
         if metadata:
-            result[metadata.name] = metadata
+            # Use entry point name (FQDN) as the key
+            result[ext.name] = metadata
 
     return result
 

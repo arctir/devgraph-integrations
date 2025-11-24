@@ -138,10 +138,11 @@ def run_release_manifest(args):
     molecules = list_all_molecules()
 
     # Create molecules list from stevedore-discovered molecules
+    # The keys are FQDNs (entry point names) from list_all_molecules()
     molecules_list = []
     for molecule_fqdn in sorted(molecules.keys()):
         molecule_data = molecules[molecule_fqdn].model_dump()
-        # Override the name field with the FQDN
+        # Override the name field with the FQDN since metadata.name is the short name
         molecule_data["name"] = molecule_fqdn
         molecules_list.append(molecule_data)
 
