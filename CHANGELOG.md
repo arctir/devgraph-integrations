@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.7.0] - 2025-11-24
+
+### ✨ Features
+
+- feat: Add MCP server enhancements for static assets and JWT auth
+- feat: Add config_schema auto-generation to molecule metadata
+
+### 🔧 Other Changes
+
+- chore: convert this project to uv
+
 ## [0.6.7] - 2025-11-21
 
 ### 🔧 Other Changes
