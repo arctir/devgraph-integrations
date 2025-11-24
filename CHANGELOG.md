@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.2] - 2025-11-24
+
+### 🐛 Bug Fixes
+
+- fix: address linting errors
+
+
 ## [0.7.1] - 2025-11-24
 
 ### 🐛 Bug Fixes
