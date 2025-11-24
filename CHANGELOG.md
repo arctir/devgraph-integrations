@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.4] - 2025-11-24
+
+### 🐛 Bug Fixes
+
+- fix: auto-detect package name in release-manifest
+- fix: use entry point name (FQDN) as molecule key
+
+
 ## [0.7.3] - 2025-11-24
 
 ### 🐛 Bug Fixes
