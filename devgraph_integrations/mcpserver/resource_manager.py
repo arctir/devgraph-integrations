@@ -22,7 +22,7 @@ class DevgraphResourceManager(ResourceManager):
         if name:
             self.resource_instances[name] = instance
         return super().add_resource(
-            Resource(
+            Resource(  # type: ignore[abstract]
                 uri=AnyUrl(name) if name else AnyUrl("resource://unnamed"),
                 name=name if name else "unnamed",
                 description=description if description else "No description",
