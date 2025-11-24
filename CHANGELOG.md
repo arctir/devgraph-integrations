@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.5] - 2025-11-24
+
+### 🐛 Bug Fixes
+
+- fix: remove unused import
+
+
 ## [0.7.4] - 2025-11-24
 
 ### 🐛 Bug Fixes
