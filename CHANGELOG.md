@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.3] - 2025-11-24
+
+### 🐛 Bug Fixes
+
+- fix: emit FQDN in release manifest molecule names
+
+
 ## [0.7.2] - 2025-11-24
 
 ### 🐛 Bug Fixes
