@@ -102,3 +102,39 @@ class Molecule(ABC):
         """
         metadata = cls.get_metadata()
         return metadata.get("capabilities", [])
+
+    @classmethod
+    def get_full_metadata(cls) -> Dict[str, Any]:
+        """Get full metadata including auto-generated config_schema.
+
+        Returns metadata from get_metadata() and automatically adds
+        config_schema from the discovery provider if available.
+
+        Returns:
+            Complete metadata dictionary with config_schema.
+        """
+        metadata = cls.get_metadata()
+
+        # Auto-generate config_schema from discovery provider if not already set
+        if "config_schema" not in metadata or metadata.get("config_schema") is None:
+            provider_cls = cls.get_discovery_provider()
+            if provider_cls is not None:
+                # Check if provider has _config_cls (MoleculeProvider pattern)
+                if (
+                    hasattr(provider_cls, "_config_cls")
+                    and provider_cls._config_cls is not None
+                ):
+                    try:
+                        metadata["config_schema"] = (
+                            provider_cls._config_cls.model_json_schema()
+                        )
+                    except Exception:
+                        pass
+                # Fallback: check for get_config_schema method
+                elif hasattr(provider_cls, "get_config_schema"):
+                    try:
+                        metadata["config_schema"] = provider_cls.get_config_schema()
+                    except Exception:
+                        pass
+
+        return metadata

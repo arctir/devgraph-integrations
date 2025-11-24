@@ -47,6 +47,9 @@ class MoleculeMetadata(BaseModel):
     replacement: Optional[str] = Field(
         default=None, description="Replacement molecule if deprecated"
     )
+    config_schema: Optional[Dict] = Field(
+        default=None, description="JSON schema for the molecule's configuration"
+    )
 
 
 def get_molecule_metadata(module_path: str) -> Optional[MoleculeMetadata]:
@@ -107,7 +110,17 @@ def list_all_molecules() -> Dict[str, MoleculeMetadata]:
     for ext in mgr:
         plugin_class = ext.plugin
 
-        # Try to get metadata from the extension class's get_metadata method
+        # Try to get full metadata (includes auto-generated config_schema)
+        if hasattr(plugin_class, "get_full_metadata"):
+            try:
+                meta_dict = plugin_class.get_full_metadata()
+                metadata = MoleculeMetadata(**meta_dict)
+                result[metadata.name] = metadata
+                continue
+            except Exception:
+                pass
+
+        # Fallback: try get_metadata without auto-generation
         if hasattr(plugin_class, "get_metadata"):
             try:
                 meta_dict = plugin_class.get_metadata()
