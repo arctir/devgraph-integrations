@@ -129,10 +129,15 @@ def run_release_manifest(args):
     """Generate a release manifest JSON for GitHub releases."""
     import json
     from datetime import datetime, timezone
-    from importlib.metadata import version
+    from importlib.metadata import packages_distributions, version
 
-    # Get package version from installed package
-    package_version = version("devgraph-integrations")
+    # Auto-detect package name: try -internal first, fallback to base
+    package_name = "devgraph-integrations"
+    try:
+        package_version = version("devgraph-integrations-internal")
+        package_name = "devgraph-integrations-internal"
+    except Exception:
+        package_version = version("devgraph-integrations")
 
     # Get all molecules via stevedore discovery
     molecules = list_all_molecules()
@@ -148,7 +153,7 @@ def run_release_manifest(args):
 
     # Build the manifest
     manifest = {
-        "package": "devgraph-integrations",
+        "package": package_name,
         "version": package_version,
         "release_date": (
             datetime.now(timezone.utc).isoformat() if not args.no_timestamp else None
