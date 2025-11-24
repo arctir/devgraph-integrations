@@ -139,8 +139,10 @@ def run_release_manifest(args):
 
     # Create molecules list from stevedore-discovered molecules
     molecules_list = []
-    for molecule_name in sorted(molecules.keys()):
-        molecule_data = molecules[molecule_name].model_dump()
+    for molecule_fqdn in sorted(molecules.keys()):
+        molecule_data = molecules[molecule_fqdn].model_dump()
+        # Override the name field with the FQDN
+        molecule_data["name"] = molecule_fqdn
         molecules_list.append(molecule_data)
 
     # Build the manifest
