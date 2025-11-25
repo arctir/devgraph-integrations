@@ -1040,20 +1040,32 @@ class DiscoveryProcessor:
             logger.error(f"Failed to reload providers from API: {e}")
 
     def create_entity_definitions(self):
-        for provider in self.providers:
-            logger.info(f"Creating entity definition for provider: {provider.name}")
-            for entity_definition in provider.entity_definitions():
-                logger.debug(f"Creating entity definition: {entity_definition}")
-                detailed_response = create_entity_definition.sync_detailed(
-                    client=self._client,
-                    body=entity_definition,
-                )
-                if detailed_response.status_code == 201:
-                    logger.debug("Entity definition created successfully")
-                elif detailed_response.status_code == 409:
-                    logger.debug("Entity definition already exists, skipping")
-                else:
-                    log_client_error(detailed_response)
+        """Create entity definitions for all providers.
+
+        This method attempts to create entity definitions but does not fail if the API
+        is unreachable. Entity definitions will be created on the first successful
+        discovery run if they don't exist yet.
+        """
+        try:
+            for provider in self.providers:
+                logger.info(f"Creating entity definition for provider: {provider.name}")
+                for entity_definition in provider.entity_definitions():
+                    logger.debug(f"Creating entity definition: {entity_definition}")
+                    detailed_response = create_entity_definition.sync_detailed(
+                        client=self._client,
+                        body=entity_definition,
+                    )
+                    if detailed_response.status_code == 201:
+                        logger.debug("Entity definition created successfully")
+                    elif detailed_response.status_code == 409:
+                        logger.debug("Entity definition already exists, skipping")
+                    else:
+                        log_client_error(detailed_response)
+        except Exception as e:
+            logger.warning(
+                f"Failed to create entity definitions at startup: {e}. "
+                "This is not fatal - definitions will be created during discovery if needed."
+            )
 
     def create_all_entity_definitions(self):
         """Create all entity definitions from the registry, not just from providers.
