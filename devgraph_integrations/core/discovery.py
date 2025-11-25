@@ -976,7 +976,16 @@ class DiscoveryProcessor:
                 continue
 
             try:
-                provider_cls = self.ext_mgr.provider(provider_config.type)
+                molecule_cls = self.ext_mgr.provider(provider_config.type)
+                if molecule_cls is None:
+                    logger.error(f"No molecule found for type {provider_config.type}")
+                    continue
+                provider_cls = molecule_cls.get_discovery_provider()
+                if provider_cls is None:
+                    logger.error(
+                        f"Molecule {provider_config.type} has no discovery provider"
+                    )
+                    continue
                 provider = provider_cls.from_config(provider_config)
                 providers.append(provider)
             except Exception as e:
