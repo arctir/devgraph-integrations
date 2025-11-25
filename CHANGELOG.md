@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.6] - 2025-11-25
+
+### 🐛 Bug Fixes
+
+- fix: change the stevedore molecules namespace
+
+
 ## [0.7.5] - 2025-11-24
 
 ### 🐛 Bug Fixes
