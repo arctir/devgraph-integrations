@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.7] - 2025-11-25
+
+### 🐛 Bug Fixes
+
+- fix: we need to get the discovery provider to hydrate
+
+
 ## [0.7.6] - 2025-11-25
 
 ### 🐛 Bug Fixes
