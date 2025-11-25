@@ -651,9 +651,9 @@ def run_provider(
                                         body=entity_definition,
                                     )
                                     if def_resp.status_code == 201:
-                                        logger.info(f"Created missing entity definition: {entity_definition.spec.kind}")
+                                        logger.info(f"Created missing entity definition: {entity_definition.kind}")
                                     elif def_resp.status_code == 409:
-                                        logger.debug(f"Entity definition already exists: {entity_definition.spec.kind}")
+                                        logger.debug(f"Entity definition already exists: {entity_definition.kind}")
                                     else:
                                         logger.warning(f"Failed to create entity definition: {def_resp.status_code}")
                                 # Retry the bulk creation after creating definitions
