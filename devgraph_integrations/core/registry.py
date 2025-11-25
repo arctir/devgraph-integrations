@@ -12,6 +12,7 @@ from typing import Dict, List, Optional
 
 from devgraph_client.api.entities import create_entity_definition
 from devgraph_client.client import AuthenticatedClient
+from devgraph_client.models.entity_definition_spec import EntityDefinitionSpec
 from loguru import logger
 
 from devgraph_integrations.core.base import EntityDefinition
@@ -180,12 +181,12 @@ class EntityDefinitionRegistry:
         for definition in self._definitions.values():
             try:
                 # Convert to API spec
-                spec = definition.to_entity_definition_spec()
+                api_spec = EntityDefinitionSpec.from_dict(definition.to_dict())
 
                 # Create via API
                 response = create_entity_definition.sync_detailed(
                     client=client,
-                    body=spec,
+                    body=api_spec,
                 )
 
                 if response.status_code == 201:

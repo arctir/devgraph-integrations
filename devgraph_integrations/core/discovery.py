@@ -21,6 +21,7 @@ from devgraph_client.client import (
 from devgraph_client.models.bulk_entity_relation_create_request import (
     BulkEntityRelationCreateRequest,
 )
+from devgraph_client.models.entity_definition_spec import EntityDefinitionSpec
 from loguru import logger
 
 from devgraph_integrations.config import Config
@@ -646,9 +647,11 @@ def run_provider(
                             )
                             try:
                                 for entity_definition in provider.entity_definitions():
+                                    # Convert to API model
+                                    api_spec = EntityDefinitionSpec.from_dict(entity_definition.to_dict())
                                     def_resp = create_entity_definition.sync_detailed(
                                         client=api_client,
-                                        body=entity_definition,
+                                        body=api_spec,
                                     )
                                     if def_resp.status_code == 201:
                                         logger.info(f"Created missing entity definition: {entity_definition.kind}")
@@ -1078,9 +1081,11 @@ class DiscoveryProcessor:
                 logger.info(f"Creating entity definition for provider: {provider.name}")
                 for entity_definition in provider.entity_definitions():
                     logger.debug(f"Creating entity definition: {entity_definition}")
+                    # Convert to API model
+                    api_spec = EntityDefinitionSpec.from_dict(entity_definition.to_dict())
                     detailed_response = create_entity_definition.sync_detailed(
                         client=self._client,
-                        body=entity_definition,
+                        body=api_spec,
                     )
                     if detailed_response.status_code == 201:
                         logger.debug("Entity definition created successfully")
