@@ -109,6 +109,10 @@ class FOSSAProvider(ReconcilingMoleculeProvider):
             return response.json()
 
         except requests.exceptions.HTTPError as e:
+            # Don't re-raise auth errors - let caller handle gracefully
+            if e.response is not None and e.response.status_code in (401, 403):
+                logger.warning(f"FOSSA API authentication failed: {e.response.status_code} {e.response.reason}")
+                raise
             logger.error(f"FOSSA API HTTP error: {e}")
             raise
         except requests.exceptions.RequestException as e:
@@ -180,8 +184,17 @@ class FOSSAProvider(ReconcilingMoleculeProvider):
                 entities.append(project_entity)
                 logger.debug(f"Discovered FOSSA project: {title} (ID: {project_id})")
 
+        except requests.exceptions.HTTPError as e:
+            # Handle authentication errors gracefully without traceback
+            if e.response is not None and e.response.status_code in (401, 403):
+                logger.warning(
+                    f"Failed to discover FOSSA projects: Authentication failed ({e.response.status_code}). "
+                    "Please check your FOSSA API token."
+                )
+            else:
+                logger.error(f"Failed to discover FOSSA projects: HTTP {e.response.status_code if e.response else 'error'}: {e}")
         except Exception as e:
-            logger.exception(f"Failed to discover FOSSA projects: {e}")
+            logger.error(f"Failed to discover FOSSA projects: {e}")
 
         logger.info(f"FOSSA provider discovered {len(entities)} total entities")
         return entities

@@ -496,7 +496,11 @@ def run_provider(
         # Create meta type entities and IS_A relations for entities with meta_type alignment
         if isinstance(provider, ReconcilingMoleculeProvider):
             # For reconciling providers, get all current entities to ensure all have IS_A relations
-            current_entities = provider._discover_current_entities()
+            try:
+                current_entities = provider._discover_current_entities()
+            except Exception as e:
+                logger.warning(f"Failed to get current entities for meta type relations: {e}")
+                current_entities = []
             meta_entities, meta_relations = create_meta_type_relations(
                 provider, current_entities
             )
@@ -635,6 +639,29 @@ def run_provider(
                                 total_failed += len(entities)
                                 break
 
+                        elif resp.status_code == 404:
+                            # Entity definition missing - try to create it and retry
+                            logger.warning(
+                                f"Entity definition missing (404), attempting to create definitions for provider {provider.name}"
+                            )
+                            try:
+                                for entity_definition in provider.entity_definitions():
+                                    def_resp = create_entity_definition.sync_detailed(
+                                        client=api_client,
+                                        body=entity_definition,
+                                    )
+                                    if def_resp.status_code == 201:
+                                        logger.info(f"Created missing entity definition: {entity_definition.spec.kind}")
+                                    elif def_resp.status_code == 409:
+                                        logger.debug(f"Entity definition already exists: {entity_definition.spec.kind}")
+                                    else:
+                                        logger.warning(f"Failed to create entity definition: {def_resp.status_code}")
+                                # Retry the bulk creation after creating definitions
+                                continue
+                            except Exception as e:
+                                logger.error(f"Failed to create entity definitions: {e}")
+                                total_failed += len(entities)
+                                break
                         else:
                             logger.error(
                                 f"Bulk entity creation failed with status {resp.status_code}"
