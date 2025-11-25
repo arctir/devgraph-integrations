@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.10] - 2025-11-25
+
+### 🐛 Bug Fixes
+
+- fix: properly convert EntityDefinition to API EntityDefinitionSpec
+- fix: use entity_definition.kind instead of entity_definition.spec.kind
+
+
 ## [0.7.9] - 2025-11-25
 
 ### 🐛 Bug Fixes
