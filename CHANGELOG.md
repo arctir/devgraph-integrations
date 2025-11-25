@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.9] - 2025-11-25
+
+### 🐛 Bug Fixes
+
+- fix: resolve discovery pod crashes and plugin loading issues
+
+
 ## [0.7.8] - 2025-11-25
 
 ### 🐛 Bug Fixes
