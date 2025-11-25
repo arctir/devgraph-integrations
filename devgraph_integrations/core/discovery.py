@@ -641,28 +641,47 @@ def run_provider(
                                 break
 
                         elif resp.status_code == 404:
-                            # Entity definition missing - try to create it and retry
-                            logger.warning(
-                                f"Entity definition missing (404), attempting to create definitions for provider {provider.name}"
-                            )
-                            try:
-                                for entity_definition in provider.entity_definitions():
-                                    # Convert to API model
-                                    api_spec = EntityDefinitionSpec.from_dict(entity_definition.to_dict())
-                                    def_resp = create_entity_definition.sync_detailed(
-                                        client=api_client,
-                                        body=api_spec,
-                                    )
-                                    if def_resp.status_code == 201:
-                                        logger.info(f"Created missing entity definition: {entity_definition.kind}")
-                                    elif def_resp.status_code == 409:
-                                        logger.debug(f"Entity definition already exists: {entity_definition.kind}")
+                            # Entity definition missing - try to create it and retry once
+                            # Log the error to understand what's missing
+                            log_client_error(resp)
+
+                            # Only try to create definitions once per batch
+                            if attempt == 0:
+                                logger.warning(
+                                    f"Entity definition missing (404), attempting to create definitions for provider {provider.name}"
+                                )
+                                try:
+                                    created_any = False
+                                    for entity_definition in provider.entity_definitions():
+                                        # Convert to API model
+                                        api_spec = EntityDefinitionSpec.from_dict(entity_definition.to_dict())
+                                        def_resp = create_entity_definition.sync_detailed(
+                                            client=api_client,
+                                            body=api_spec,
+                                        )
+                                        if def_resp.status_code == 201:
+                                            logger.info(f"Created missing entity definition: {entity_definition.kind}")
+                                            created_any = True
+                                        elif def_resp.status_code == 409:
+                                            logger.debug(f"Entity definition already exists: {entity_definition.kind}")
+                                        else:
+                                            logger.warning(f"Failed to create entity definition: {def_resp.status_code}")
+                                            log_client_error(def_resp)
+
+                                    # Only retry if we actually created a new definition
+                                    if created_any:
+                                        logger.info("Created new entity definitions, retrying bulk creation")
+                                        continue
                                     else:
-                                        logger.warning(f"Failed to create entity definition: {def_resp.status_code}")
-                                # Retry the bulk creation after creating definitions
-                                continue
-                            except Exception as e:
-                                logger.error(f"Failed to create entity definitions: {e}")
+                                        logger.warning("Entity definitions already exist, 404 error is from something else")
+                                        total_failed += len(entities)
+                                        break
+                                except Exception as e:
+                                    logger.error(f"Failed to create entity definitions: {e}")
+                                    total_failed += len(entities)
+                                    break
+                            else:
+                                logger.error(f"Still getting 404 after creating entity definitions, giving up")
                                 total_failed += len(entities)
                                 break
                         else:
