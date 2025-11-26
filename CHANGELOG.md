@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0] - 2025-11-26
+
+### ✨ Features
+
+- feat: add relation ownership tracking with metadata and typed specs
+
+### 🐛 Bug Fixes
+
+- fix: prevent infinite retry loop on 404 entity definition errors
+
+### 🔧 Other Changes
+
+- refactor: migrate all providers to use relation ownership tracking
+- test: add comprehensive tests for relation ownership and metadata
+
 ## [0.7.10] - 2025-11-25
 
 ### 🐛 Bug Fixes
