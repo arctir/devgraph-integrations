@@ -657,23 +657,19 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                     existing_sig = self._get_relation_signature(existing_rel)
                     logger.debug(f"Checking existing relation: {existing_sig}")
 
-                    # Check if this relation involves entities managed by this provider
-                    # We need to check if either source or target belongs to this provider
-                    source_managed = self._is_entity_managed_by_provider(
-                        existing_rel.source, resp.parsed.primary_entities
-                    )
-                    target_managed = self._is_entity_managed_by_provider(
-                        existing_rel.target, resp.parsed.primary_entities
-                    )
+                    # Check if this relation is managed by this provider using ownership metadata
+                    managed_by = ""
+                    if hasattr(existing_rel, "metadata") and hasattr(existing_rel.metadata, "labels"):
+                        managed_by = existing_rel.metadata.labels.get("managed-by", "")
 
-                    logger.debug(
-                        f"  Source managed: {source_managed}, Target managed: {target_managed}"
-                    )
+                    provider_managed = managed_by == f"provider:{self.name}"
 
-                    # Only manage relations where at least one end is managed by this provider
-                    if not (source_managed or target_managed):
+                    logger.debug(f"  Relation managed-by: {managed_by}, Provider: {self.name}, Match: {provider_managed}")
+
+                    # Only manage relations that this provider owns
+                    if not provider_managed:
                         logger.debug(
-                            "  Skipping - neither end managed by this provider"
+                            f"  Skipping - not managed by provider:{self.name}"
                         )
                         continue
 
@@ -725,13 +721,13 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
 
     def _get_relation_signature(self, relation) -> str:
         """
-        Get a unique signature for a relation for comparison.
+        Get a unique signature for a relation including ownership metadata.
 
         Args:
             relation: Relation object
 
         Returns:
-            Unique string signature
+            Unique string signature including managed-by label
         """
         # Handle different relation formats
         if (
@@ -749,7 +745,13 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                 if hasattr(relation.target, "id")
                 else str(relation.target)
             )
-            return f"{source_id}::{relation.relation}::{target_id}"
+
+            # Include managed-by label in signature for ownership tracking
+            managed_by = ""
+            if hasattr(relation, "metadata") and hasattr(relation.metadata, "labels"):
+                managed_by = relation.metadata.labels.get("managed-by", "")
+
+            return f"{source_id}::{relation.relation}::{target_id}::{managed_by}"
         return str(relation)
 
     def _is_entity_managed_by_provider(self, entity_ref, primary_entities) -> bool:
@@ -777,6 +779,66 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                 break
 
         return False
+
+    def create_relation_with_metadata(
+        self,
+        relation_class,
+        source: "EntityReference",
+        target: "EntityReference",
+        namespace: str = "default",
+        spec: dict = None,
+        **kwargs
+    ):
+        """
+        Helper method to create a relation with proper ownership metadata.
+
+        Args:
+            relation_class: The relation class to instantiate (e.g., PersonMemberOfTeamRelation)
+            source: Source entity reference
+            target: Target entity reference
+            namespace: Namespace for the relation
+            spec: Optional spec dict or typed spec object
+            **kwargs: Additional arguments passed to relation constructor
+
+        Returns:
+            Relation instance with ownership metadata
+
+        Example:
+            relation = self.create_relation_with_metadata(
+                PersonMemberOfTeamRelation,
+                source=person.reference,
+                target=team.reference,
+                spec={"role": "member"}
+            )
+        """
+        from devgraph_integrations.types.entities import RelationMetadata
+
+        # Create metadata with ownership tracking
+        metadata = RelationMetadata(
+            labels={
+                "managed-by": f"provider:{self.name}",
+                "source-type": "discovered",
+            },
+            annotations={}
+        )
+
+        # Merge any additional metadata from kwargs
+        if "metadata" in kwargs:
+            user_metadata = kwargs.pop("metadata")
+            if hasattr(user_metadata, "labels"):
+                metadata.labels.update(user_metadata.labels)
+            if hasattr(user_metadata, "annotations"):
+                metadata.annotations.update(user_metadata.annotations)
+
+        # Create the relation
+        return relation_class(
+            source=source,
+            target=target,
+            namespace=namespace,
+            metadata=metadata,
+            spec=spec or {},
+            **kwargs
+        )
 
 
 class IncrementalReconciliation(ReconciliationStrategy):

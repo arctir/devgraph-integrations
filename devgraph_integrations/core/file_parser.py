@@ -304,12 +304,32 @@ def _create_relation_from_data(
             target_ref_data["namespace"] = namespace
         target_ref = EntityReference(**target_ref_data)
 
-        # Create relation
+        # Extract or create metadata
+        from devgraph_integrations.types.entities import RelationMetadata
+
+        metadata_data = relation_data.get("metadata", {})
+        labels = metadata_data.get("labels", {})
+        annotations = metadata_data.get("annotations", {})
+
+        # Add source tracking labels (like entities do)
+        labels["source-name"] = source_name
+        labels["source-file"] = file_path
+        labels["source-type"] = "declared"  # Relations from .devgraph.yaml are declared
+        labels["managed-by"] = f"file:{source_name}"  # Managed by the file provider
+
+        metadata = RelationMetadata(labels=labels, annotations=annotations)
+
+        # Extract spec if provided
+        spec = relation_data.get("spec", {})
+
+        # Create relation with metadata and spec
         relation = EntityRelation(
             namespace=relation_data.get("namespace", namespace),
             relation=relation_data["relation"],
             source=source_ref,
             target=target_ref,
+            metadata=metadata,
+            spec=spec,
         )
 
         logger.debug(
@@ -488,6 +508,12 @@ def _validate_relation_data(relation_data: Any, context: str) -> List[str]:
                     relation_data[field], f"{context}.{field}"
                 )
                 errors.extend(ref_errors)
+
+    # Check optional spec field
+    if "spec" in relation_data:
+        spec = relation_data["spec"]
+        if spec is not None and not isinstance(spec, dict):
+            errors.append(f"{context}: 'spec' must be a dictionary or null")
 
     return errors
 
