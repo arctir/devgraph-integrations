@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1] - 2025-11-26
+
+### 🐛 Bug Fixes
+
+- fix: remove unused imports and fix f-string linting errors
+
+
 ## [0.8.0] - 2025-11-26
 
 ### ✨ Features
