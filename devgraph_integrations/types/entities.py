@@ -19,11 +19,19 @@ class EntityReference(BaseModel):
         return f"{self.apiVersion}/{self.kind}/{self.namespace}/{self.name}"
 
 
+class RelationMetadata(BaseModel):
+    """Metadata for a relation, following Kubernetes-style conventions."""
+    labels: Dict[str, str] = Field(default_factory=dict)  # Labels for querying and ownership (e.g., managed-by, source-type)
+    annotations: Dict[str, str] = Field(default_factory=dict)  # Annotations for additional metadata
+
+
 class EntityRelation(BaseModel):
     namespace: str = "default"
     relation: str
     source: EntityReference
     target: EntityReference
+    metadata: RelationMetadata = Field(default_factory=RelationMetadata)
+    spec: Dict[str, Any] = Field(default_factory=dict)  # Custom relation data/attributes
 
     def to_dict(self) -> dict:
         return self.model_dump(mode="json", by_alias=True, exclude_none=True)
@@ -322,6 +330,8 @@ class EntityRelationResponse(BaseModel):
     relation: str
     source: EntityReferenceResponse
     target: EntityReferenceResponse
+    metadata: RelationMetadata = Field(default_factory=RelationMetadata)
+    spec: Dict[str, Any] = Field(default_factory=dict)
 
     def to_dict(self) -> dict:
         return self.model_dump(mode="json", by_alias=True, exclude_none=True)
