@@ -681,7 +681,7 @@ def run_provider(
                                     total_failed += len(entities)
                                     break
                             else:
-                                logger.error(f"Still getting 404 after creating entity definitions, giving up")
+                                logger.error("Still getting 404 after creating entity definitions, giving up")
                                 total_failed += len(entities)
                                 break
                         else:

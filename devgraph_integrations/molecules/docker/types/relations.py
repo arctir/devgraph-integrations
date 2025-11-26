@@ -3,7 +3,7 @@
 This module defines relationships between Docker registry entities.
 """
 
-from typing import Optional, Dict, Any
+from typing import Optional, Dict
 from pydantic import BaseModel, Field
 from devgraph_integrations.types.entities import EntityRelation
 

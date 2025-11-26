@@ -8,7 +8,6 @@ This test suite covers:
 - File parser metadata population
 - Typed relation specs (BuiltFromSpec, BuildsSpec)
 """
-import pytest
 from devgraph_integrations.types.entities import (
     EntityReference,
     EntityRelation,
@@ -17,7 +16,6 @@ from devgraph_integrations.types.entities import (
 from devgraph_integrations.molecules.base.reconciliation import (
     ReconcilingMoleculeProvider,
 )
-from devgraph_integrations.molecules.base.provider import MoleculeProvider
 from devgraph_integrations.molecules.docker.types.relations import (
     DockerRepositoryBuiltFromGithubRepositoryRelation,
     GithubRepositoryBuildsDockerRepositoryRelation,
@@ -26,7 +24,6 @@ from devgraph_integrations.molecules.docker.types.relations import (
 )
 from devgraph_integrations.core.file_parser import (
     parse_entity_file,
-    _create_relation_from_data,
     validate_entity_file_content,
 )
 
