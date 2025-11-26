@@ -384,7 +384,8 @@ class FOSSAProvider(ReconcilingMoleculeProvider):
             # Look for matching repository
             if normalized_fossa_url in url_to_repo:
                 repo_ref = url_to_repo[normalized_fossa_url]
-                relation = FOSSAProjectScansRelation(
+                relation = self.create_relation_with_metadata(
+                    FOSSAProjectScansRelation,
                     namespace=self.config.namespace,
                     source=fossa_project.reference,
                     target=repo_ref,

@@ -253,9 +253,9 @@ class VercelProvider(ReconcilingMoleculeProvider):
             team_id = project_entity.spec.team_id
             if team_id and team_id in teams_by_id:
                 relations.append(
-                    VercelProjectBelongsToTeamRelation(
+                    self.create_relation_with_metadata(
+                        VercelProjectBelongsToTeamRelation,
                         namespace=self.config.namespace,
-                        relation="BELONGS_TO",
                         source=project_entity.reference,
                         target=teams_by_id[team_id].reference,
                     )
@@ -280,9 +280,9 @@ class VercelProvider(ReconcilingMoleculeProvider):
             project_id = deployment_entity.spec.project_id
             if project_id in projects_by_id:
                 relations.append(
-                    VercelDeploymentBelongsToProjectRelation(
+                    self.create_relation_with_metadata(
+                        VercelDeploymentBelongsToProjectRelation,
                         namespace=self.config.namespace,
-                        relation="BELONGS_TO",
                         source=deployment_entity.reference,
                         target=projects_by_id[project_id].reference,
                     )

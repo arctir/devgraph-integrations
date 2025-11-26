@@ -537,25 +537,41 @@ class DockerProvider(ReconcilingMoleculeProvider):
                         break
 
                 if matching_repo:
-                    # Create bidirectional relations
-                    built_from_relation = (
-                        DockerRepositoryBuiltFromGithubRepositoryRelation(
-                            source=docker_repo.reference,
-                            target=matching_repo.reference,
-                            namespace=self.config.namespace,
-                        )
+                    # Create bidirectional relations with typed specs and ownership metadata
+                    from devgraph_integrations.molecules.docker.types.relations import (
+                        BuiltFromSpec,
+                        BuildsSpec,
+                    )
+
+                    # BUILT_FROM relation with spec data and ownership metadata
+                    built_from_relation = self.create_relation_with_metadata(
+                        DockerRepositoryBuiltFromGithubRepositoryRelation,
+                        source=docker_repo.reference,
+                        target=matching_repo.reference,
+                        namespace=self.config.namespace,
+                        spec=BuiltFromSpec(
+                            dockerfile_path="Dockerfile",  # Default, could be extracted from labels
+                            build_context=".",
+                        ),
                     )
                     relations.append(built_from_relation)
 
-                    builds_relation = GithubRepositoryBuildsDockerRepositoryRelation(
+                    # BUILDS relation with spec data and ownership metadata
+                    builds_relation = self.create_relation_with_metadata(
+                        GithubRepositoryBuildsDockerRepositoryRelation,
                         source=matching_repo.reference,
                         target=docker_repo.reference,
                         namespace=self.config.namespace,
+                        spec=BuildsSpec(
+                            dockerfile_path="Dockerfile",
+                            build_context=".",
+                            target_tags=["latest"],  # Could extract from image tags
+                        ),
                     )
                     relations.append(builds_relation)
 
                     logger.info(
-                        f"Created bidirectional relations: DockerRepo {docker_repo.metadata.name} <-> GithubRepo {matching_repo.metadata.name}"
+                        f"Created bidirectional relations with specs: DockerRepo {docker_repo.metadata.name} <-> GithubRepo {matching_repo.metadata.name}"
                     )
                 else:
                     logger.debug(

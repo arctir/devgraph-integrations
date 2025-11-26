@@ -336,7 +336,8 @@ class GithubProvider(ReconcilingMoleculeProvider):
         if github_host:
             logger.debug(f"Creating {len(repositories)} HOSTED_BY relations")
             for repository in repositories:
-                relation = GithubRepositoryHostedByRelation(
+                relation = self.create_relation_with_metadata(
+                    GithubRepositoryHostedByRelation,
                     namespace=self.config.namespace,
                     source=repository.reference,
                     target=github_host.reference,

@@ -114,7 +114,8 @@ class ArgoProvider(HttpApiMoleculeProvider):
             create_entities.append(project_entity)
 
             create_relations.append(
-                ProjectBelongsToInstanceRelation(
+                self.create_relation_with_metadata(
+                    ProjectBelongsToInstanceRelation,
                     namespace=self.config.namespace,
                     source=project_entity.reference,
                     target=argo_instance.reference,
@@ -137,9 +138,10 @@ class ArgoProvider(HttpApiMoleculeProvider):
                 )
                 create_entities.append(app_entity)
 
-                # Standard relation to project
+                # Standard relation to project with ownership metadata
                 create_relations.append(
-                    ApplicationBelongsToProjectRelation(
+                    self.create_relation_with_metadata(
+                        ApplicationBelongsToProjectRelation,
                         namespace=self.config.namespace,
                         source=app_entity.reference,
                         target=project_entity.reference,

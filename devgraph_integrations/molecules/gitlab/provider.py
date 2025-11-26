@@ -283,7 +283,8 @@ class GitlabProvider(ReconcilingMoleculeProvider):
         if gitlab_host:
             logger.debug(f"Creating {len(projects)} HOSTED_BY relations")
             for project in projects:
-                relation = GitlabProjectHostedByRelation(
+                relation = self.create_relation_with_metadata(
+                    GitlabProjectHostedByRelation,
                     namespace=self.config.namespace,
                     source=project.reference,
                     target=gitlab_host.reference,

@@ -368,7 +368,8 @@ class LdapProvider(ReconcilingMoleculeProvider):
             if hasattr(user_entity.spec, "member_of") and user_entity.spec.member_of:
                 for group_dn in user_entity.spec.member_of:
                     if group_dn in group_dn_to_entity:
-                        relation = LdapUserMemberOfGroupRelation(
+                        relation = self.create_relation_with_metadata(
+                            LdapUserMemberOfGroupRelation,
                             source=user_entity.reference,
                             target=group_dn_to_entity[group_dn].reference,
                             namespace=self.config.namespace,
@@ -379,7 +380,8 @@ class LdapProvider(ReconcilingMoleculeProvider):
             if hasattr(user_entity.spec, "manager") and user_entity.spec.manager:
                 manager_dn = user_entity.spec.manager
                 if manager_dn in user_dn_to_entity:
-                    relation = LdapUserReportsToUserRelation(
+                    relation = self.create_relation_with_metadata(
+                        LdapUserReportsToUserRelation,
                         source=user_entity.reference,
                         target=user_dn_to_entity[manager_dn].reference,
                         namespace=self.config.namespace,
@@ -389,7 +391,8 @@ class LdapProvider(ReconcilingMoleculeProvider):
             # User BELONGS_TO OrgUnit (based on DN hierarchy)
             user_parent_dn = self._get_parent_dn(user_entity.spec.dn)
             if user_parent_dn and user_parent_dn in ou_dn_to_entity:
-                relation = LdapUserBelongsToOrgUnitRelation(
+                relation = self.create_relation_with_metadata(
+                    LdapUserBelongsToOrgUnitRelation,
                     source=user_entity.reference,
                     target=ou_dn_to_entity[user_parent_dn].reference,
                     namespace=self.config.namespace,
@@ -401,7 +404,8 @@ class LdapProvider(ReconcilingMoleculeProvider):
             # Group BELONGS_TO OrgUnit (based on DN hierarchy)
             group_parent_dn = self._get_parent_dn(group_entity.spec.dn)
             if group_parent_dn and group_parent_dn in ou_dn_to_entity:
-                relation = LdapGroupBelongsToOrgUnitRelation(
+                relation = self.create_relation_with_metadata(
+                    LdapGroupBelongsToOrgUnitRelation,
                     source=group_entity.reference,
                     target=ou_dn_to_entity[group_parent_dn].reference,
                     namespace=self.config.namespace,
@@ -412,7 +416,8 @@ class LdapProvider(ReconcilingMoleculeProvider):
             if hasattr(group_entity.spec, "owner") and group_entity.spec.owner:
                 owner_dn = group_entity.spec.owner
                 if owner_dn in user_dn_to_entity:
-                    relation = LdapGroupOwnedByUserRelation(
+                    relation = self.create_relation_with_metadata(
+                        LdapGroupOwnedByUserRelation,
                         source=group_entity.reference,
                         target=user_dn_to_entity[owner_dn].reference,
                         namespace=self.config.namespace,
@@ -426,7 +431,8 @@ class LdapProvider(ReconcilingMoleculeProvider):
             ):
                 managed_by_dn = group_entity.spec.managed_by
                 if managed_by_dn in user_dn_to_entity:
-                    relation = LdapGroupManagedByUserRelation(
+                    relation = self.create_relation_with_metadata(
+                        LdapGroupManagedByUserRelation,
                         source=group_entity.reference,
                         target=user_dn_to_entity[managed_by_dn].reference,
                         namespace=self.config.namespace,
@@ -438,7 +444,8 @@ class LdapProvider(ReconcilingMoleculeProvider):
             # OrgUnit BELONGS_TO parent OrgUnit (based on DN hierarchy)
             ou_parent_dn = self._get_parent_dn(ou_entity.spec.dn)
             if ou_parent_dn and ou_parent_dn in ou_dn_to_entity:
-                relation = LdapOrgUnitBelongsToOrgUnitRelation(
+                relation = self.create_relation_with_metadata(
+                    LdapOrgUnitBelongsToOrgUnitRelation,
                     source=ou_entity.reference,
                     target=ou_dn_to_entity[ou_parent_dn].reference,
                     namespace=self.config.namespace,
