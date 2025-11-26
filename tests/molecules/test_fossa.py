@@ -152,7 +152,7 @@ class TestFOSSAMolecule(HTTPMoleculeTestCase):
         github_repo.metadata.namespace = "test-namespace"
         github_repo.api_version = "entities.devgraph.ai/v1"
         github_repo.spec = Mock()
-        github_repo.spec.additional_properties = {"url": "https://github.com/test/repo"}
+        github_repo.spec.url = "https://github.com/test/repo"
 
         # Mock the get_entities call (imported inside the method)
         with patch("devgraph_client.api.entities.get_entities") as mock_get_entities:

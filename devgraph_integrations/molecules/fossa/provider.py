@@ -111,7 +111,9 @@ class FOSSAProvider(ReconcilingMoleculeProvider):
         except requests.exceptions.HTTPError as e:
             # Don't re-raise auth errors - let caller handle gracefully
             if e.response is not None and e.response.status_code in (401, 403):
-                logger.warning(f"FOSSA API authentication failed: {e.response.status_code} {e.response.reason}")
+                logger.warning(
+                    f"FOSSA API authentication failed: {e.response.status_code} {e.response.reason}"
+                )
                 raise
             logger.error(f"FOSSA API HTTP error: {e}")
             raise
@@ -192,7 +194,9 @@ class FOSSAProvider(ReconcilingMoleculeProvider):
                     "Please check your FOSSA API token."
                 )
             else:
-                logger.error(f"Failed to discover FOSSA projects: HTTP {e.response.status_code if e.response else 'error'}: {e}")
+                logger.error(
+                    f"Failed to discover FOSSA projects: HTTP {e.response.status_code if e.response else 'error'}: {e}"
+                )
         except Exception as e:
             logger.error(f"Failed to discover FOSSA projects: {e}")
 
@@ -329,10 +333,8 @@ class FOSSAProvider(ReconcilingMoleculeProvider):
         url_to_repo = {}
 
         for repo in github_repos:
-            # Try to get URL from spec.additional_properties
-            url = None
-            if hasattr(repo, "spec") and hasattr(repo.spec, "additional_properties"):
-                url = repo.spec.additional_properties.get("url")
+            # Get URL directly from spec.url field
+            url = getattr(repo.spec, "url", None) if hasattr(repo, "spec") else None
 
             if url:
                 normalized = self._normalize_url(url)
@@ -345,12 +347,10 @@ class FOSSAProvider(ReconcilingMoleculeProvider):
                     )
 
         for project in gitlab_projects:
-            # Try to get URL from spec.additional_properties
-            url = None
-            if hasattr(project, "spec") and hasattr(
-                project.spec, "additional_properties"
-            ):
-                url = project.spec.additional_properties.get("url")
+            # Get URL directly from spec.url field
+            url = (
+                getattr(project.spec, "url", None) if hasattr(project, "spec") else None
+            )
 
             if url:
                 normalized = self._normalize_url(url)
