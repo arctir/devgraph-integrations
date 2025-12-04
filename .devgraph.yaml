@@ -1,0 +1,10 @@
+relations:
+  - relation: PART_OF
+    source:
+      apiVersion: entities.devgraph.ai/v1
+      kind: GithubRepository
+      name: devgraph-integrations
+    target:
+      apiVersion: entities.devgraph.ai/v1
+      kind: Workstream
+      name: devgraph
