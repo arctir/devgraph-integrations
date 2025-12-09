@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.8.2] - 2025-12-09
+
+### 🐛 Bug Fixes
+
+- fix: update devgraph-client for relation metadata
+
+### 🔧 Other Changes
+
+- Add .devgraph.yaml to mark repository as part of devgraph workstream
+- chore: update uv.lock
+- Fix FOSSA provider to access repository URLs from spec.url field
+
 ## [0.8.1] - 2025-11-26
 
 ### 🐛 Bug Fixes
