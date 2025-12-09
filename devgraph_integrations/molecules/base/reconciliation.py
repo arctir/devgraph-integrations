@@ -436,10 +436,25 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                     ),
                 )
 
+                # Check if this relation is managed by a .devgraph.yaml file
+                is_file_managed = False
+                if hasattr(existing_rel, "metadata") and hasattr(
+                    existing_rel.metadata, "labels"
+                ):
+                    managed_by = existing_rel.metadata.labels.get("managed-by", "")
+                    is_file_managed = managed_by.startswith("file:")
+                    if is_file_managed:
+                        logger.debug(
+                            f"Skipping file-managed relation (managed by {managed_by}): {existing_sig}"
+                        )
+
                 # Only manage relations where at least one end is managed by this provider
+                # BUT don't delete relations that are managed by .devgraph.yaml files
                 if (
-                    source_managed or target_managed
-                ) and existing_sig not in current_relation_sigs:
+                    (source_managed or target_managed)
+                    and existing_sig not in current_relation_sigs
+                    and not is_file_managed
+                ):
                     logger.info(f"Found stale relation to delete: {existing_sig}")
                     from devgraph_integrations.types.entities import (
                         EntityReference,
@@ -659,12 +674,16 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
 
                     # Check if this relation is managed by this provider using ownership metadata
                     managed_by = ""
-                    if hasattr(existing_rel, "metadata") and hasattr(existing_rel.metadata, "labels"):
+                    if hasattr(existing_rel, "metadata") and hasattr(
+                        existing_rel.metadata, "labels"
+                    ):
                         managed_by = existing_rel.metadata.labels.get("managed-by", "")
 
                     provider_managed = managed_by == f"provider:{self.name}"
 
-                    logger.debug(f"  Relation managed-by: {managed_by}, Provider: {self.name}, Match: {provider_managed}")
+                    logger.debug(
+                        f"  Relation managed-by: {managed_by}, Provider: {self.name}, Match: {provider_managed}"
+                    )
 
                     # Only manage relations that this provider owns
                     if not provider_managed:
@@ -787,7 +806,7 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
         target: "EntityReference",
         namespace: str = "default",
         spec: dict = None,
-        **kwargs
+        **kwargs,
     ):
         """
         Helper method to create a relation with proper ownership metadata.
@@ -819,7 +838,7 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                 "managed-by": f"provider:{self.name}",
                 "source-type": "discovered",
             },
-            annotations={}
+            annotations={},
         )
 
         # Merge any additional metadata from kwargs
@@ -837,7 +856,7 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
             namespace=namespace,
             metadata=metadata,
             spec=spec or {},
-            **kwargs
+            **kwargs,
         )
 
 
