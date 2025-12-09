@@ -768,7 +768,12 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
             # Include managed-by label in signature for ownership tracking
             managed_by = ""
             if hasattr(relation, "metadata") and hasattr(relation.metadata, "labels"):
-                managed_by = relation.metadata.labels.get("managed-by", "")
+                # Labels may be a dict or a RelationMetadataLabels object with additional_properties
+                labels = relation.metadata.labels
+                if hasattr(labels, "additional_properties"):
+                    managed_by = labels.additional_properties.get("managed-by", "")
+                else:
+                    managed_by = labels.get("managed-by", "")
 
             return f"{source_id}::{relation.relation}::{target_id}::{managed_by}"
         return str(relation)
