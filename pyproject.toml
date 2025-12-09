@@ -1,6 +1,6 @@
 [project]
 name = "devgraph-integrations"
-version = "0.8.2"
+version = "0.8.3"
 description = "Integration providers for discovering and syncing entities with Devgraph"
 authors = [{ name = "Craig Tracey", email = "craig@arctir.com" }]
 requires-python = ">=3.10,<4"

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.3] - 2025-12-09
+
+### 🐛 Bug Fixes
+
+- fix: dont call get on RelationMetadataLabels
+
+
 ## [0.8.2] - 2025-12-09
 
 ### 🐛 Bug Fixes
