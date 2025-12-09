@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.4] - 2025-12-09
+
+### 🐛 Bug Fixes
+
+- fix: fix more instances of get()
+
+
 ## [0.8.3] - 2025-12-09
 
 ### 🐛 Bug Fixes
