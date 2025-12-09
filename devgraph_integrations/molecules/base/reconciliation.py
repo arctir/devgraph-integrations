@@ -441,7 +441,12 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                 if hasattr(existing_rel, "metadata") and hasattr(
                     existing_rel.metadata, "labels"
                 ):
-                    managed_by = existing_rel.metadata.labels.get("managed-by", "")
+                    # Labels may be a dict or a RelationMetadataLabels object with additional_properties
+                    labels = existing_rel.metadata.labels
+                    if hasattr(labels, "additional_properties"):
+                        managed_by = labels.additional_properties.get("managed-by", "")
+                    else:
+                        managed_by = labels.get("managed-by", "")
                     is_file_managed = managed_by.startswith("file:")
                     if is_file_managed:
                         logger.debug(
@@ -677,7 +682,14 @@ class ReconcilingMoleculeProvider(MoleculeProvider, ABC):
                     if hasattr(existing_rel, "metadata") and hasattr(
                         existing_rel.metadata, "labels"
                     ):
-                        managed_by = existing_rel.metadata.labels.get("managed-by", "")
+                        # Labels may be a dict or a RelationMetadataLabels object with additional_properties
+                        labels = existing_rel.metadata.labels
+                        if hasattr(labels, "additional_properties"):
+                            managed_by = labels.additional_properties.get(
+                                "managed-by", ""
+                            )
+                        else:
+                            managed_by = labels.get("managed-by", "")
 
                     provider_managed = managed_by == f"provider:{self.name}"
 
