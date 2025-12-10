@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.8.5] - 2025-12-10
+
+### 🔧 Other Changes
+
+- chore: update devgraph-client dependency
+
 ## [0.8.4] - 2025-12-09
 
 ### 🐛 Bug Fixes
